@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HLFaker</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="welcome">HLFaker Android Module by @hl46000\n1-HLFaker is an Xposed Module.\nRequires Xposed/LSPosed framework.\n2-HLFaker fakes device information.\n3-Open source at: https://github.com/hl46000/MMOModule\nContact: hl.46000@gmail.com</string>
+    
+    <!-- LSPosed Scope - Apps that module can hook -->
+    <string-array name="xposed_scope">
+        <!-- System apps -->
+        <item>android</item>
+        <item>com.android.systemui</item>
+        <item>com.android.settings</item>
+        <!-- Google services -->
+        <item>com.google.android.gms</item>
+        <item>com.android.vending</item>
+        <!-- Common apps -->
+        <item>com.alibaba.aliexpresshd</item>
+    </string-array>
+</resources>
