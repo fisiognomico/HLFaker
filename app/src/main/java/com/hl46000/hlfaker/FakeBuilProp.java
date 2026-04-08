@@ -4,7 +4,6 @@ package com.hl46000.hlfaker;
 import android.content.Context;
 import android.os.Build;
 import android.os.Build.VERSION;
-import android.support.v7.widget.helper.ItemTouchHelper.Callback;
 import android.telephony.TelephonyManager;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -126,7 +125,7 @@ public class FakeBuilProp {
     public int getIp() {
         int i = 1677895872;
         try {
-            i = Util.inetAddressToInt(InetAddress.getByName("192.168." + Util.randInt(0, 5) + "." + Util.randInt(1, Callback.DEFAULT_SWIPE_ANIMATION_DURATION)));
+            i = Util.inetAddressToInt(InetAddress.getByName("192.168." + Util.randInt(0, 5) + "." + Util.randInt(1, 254)));
         } catch (IllegalArgumentException e) {
         } catch (UnknownHostException e2) {
             e2.printStackTrace();

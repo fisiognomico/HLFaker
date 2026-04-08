@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam;
 import de.robv.android.xposed.XposedBridge;
@@ -54,7 +53,7 @@ public class FakeHardwareInfo {
 	
 	private static void writeValue(InputStream inputStream, OutputStream outputStream) {
         try {
-            byte[] bArr = new byte[AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT];
+            byte[] bArr = new byte[1024];
             while (true) {
                 int read = inputStream.read(bArr);
                 if (read != -1) {

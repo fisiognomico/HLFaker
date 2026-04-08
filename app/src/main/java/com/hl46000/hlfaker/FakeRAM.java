@@ -1,8 +1,6 @@
 package com.hl46000.hlfaker;
 
 import java.util.Random;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
-import android.support.v7.widget.RecyclerView.ItemAnimator;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -34,7 +32,7 @@ public class FakeRAM {
 		
 	}
 	private int randomRam() {
-        int[] Array = new int[]{AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT, ItemAnimator.FLAG_MOVED, 3027, ItemAnimator.FLAG_APPEARED_IN_PRE_LAYOUT};
+        int[] Array = new int[]{1024, 2048, 3027, 4096};
         return Array[new Random().nextInt(Array.length)];
     }
 }

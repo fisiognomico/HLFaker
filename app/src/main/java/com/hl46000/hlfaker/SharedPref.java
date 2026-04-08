@@ -35,10 +35,11 @@ public class SharedPref {
     
     public static XSharedPreferences getMyXSharedPref() {
         if (myXsharedPref != null) {
-        	myXsharedPref.reload();
+            myXsharedPref.reload();
             return myXsharedPref;
         }
         myXsharedPref = new XSharedPreferences(Common.PACKAGE_NAME, Common.PREFS_FILE);
+        myXsharedPref.makeWorldReadable();
         return myXsharedPref;
     }
     

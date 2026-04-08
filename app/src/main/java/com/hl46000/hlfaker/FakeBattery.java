@@ -7,9 +7,8 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
-import android.support.v4.app.*;
 import com.hl46000.hlfaker.SharedPref;
-/*Lop thay doi trang thai cua Battery*/
+
 public class FakeBattery {
 
 	// Fake trang thai cua Pin
@@ -23,21 +22,21 @@ public class FakeBattery {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
 					if (param.args[0] != null) {
-			            if (param.args[0] == "temperature") {
-			            	param.setResult(Integer.valueOf(SharedPref.getXValue("Temp")));
-			            }
-			            if (param.args[0] == "level") {
-			            	param.setResult(Integer.valueOf(SharedPref.getXValue("Level")));
-			            }
-			            if (param.args[0] == "plugged") {
-			            	param.setResult(Integer.valueOf(random02()));
-			            }
-			            if (param.args[0] == NotificationCompat.CATEGORY_STATUS) {
-			            	param.setResult(Integer.valueOf(random24()));
-			            }
-			            if (param.args[0] == "health") {
-			            	param.setResult(Integer.valueOf("2"));
-			            }
+            if (param.args[0].equals("temperature")) {
+                        param.setResult(Integer.valueOf(SharedPref.getXValue("Temp")));
+                    }
+                    if (param.args[0].equals("level")) {
+                        param.setResult(Integer.valueOf(SharedPref.getXValue("Level")));
+                    }
+                    if (param.args[0].equals("plugged")) {
+                        param.setResult(Integer.valueOf(random02()));
+                    }
+                    if (param.args[0].equals("status")) {
+                        param.setResult(Integer.valueOf(random24()));
+                    }
+                    if (param.args[0].equals("health")) {
+                        param.setResult(Integer.valueOf("2"));
+                    }
 			        }
 				}
 				
