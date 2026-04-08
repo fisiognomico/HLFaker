@@ -313,6 +313,14 @@ The replacement files are copied from assets:
 ## 4. Additional Improvements
 
 ### 4.1 Code Quality
+- [ ] **Add default values for all SharedPref calls** (CRITICAL - Prevents crashes when MainActivity hasn't run)
+  - Add `getXValue(String key, String defaultValue)` method to SharedPref.java
+  - Update FakeBattery.java - Defaults: Temp="350", Level="35"
+  - Update FakeBuildInfo.java - Defaults for all Build properties (BOARD="MSM8960", BRAND="samsung", etc.)
+  - Update FakeHardwareInfo.java - Defaults for WiFi, Bluetooth, Telephony
+  - Update FakeOpenGL.java - Defaults for GLRenderer, GLVendor, DPI
+  - Update FakeEmail.java - Default email
+  - Update RootCloak.java - Default package list
 - [ ] **Add null checks** in FakeBuildInfo.java for SharedPref values
 - [ ] **Fix typos** in class names (FakeBuilProp -> FakeBuildProp, BuilInfo -> BuildInfo)
 - [ ] **Remove hardcoded package checks** in FakeCPU.java and FakeRAM.java
@@ -324,14 +332,20 @@ The replacement files are copied from assets:
 - [ ] **Add signature verification** for the module
 
 ### 4.3 Compatibility
+- [x] **Test with KernelSU** - Module working with root permission granted
 - [ ] **Test on Android 8.0 - 14** (API 26-34)
-- [ ] **Test with Magisk** and KernelSU
+- [ ] **Test with Magisk**
 - [ ] **Test with various LSPosed versions**
 
 ### 4.4 Documentation
 - [x] **Document all configurable properties** - Completed in Section 3
 - [ ] **Create README.md** with installation instructions
 - [ ] **Add CHANGELOG.md** for version history
+
+### 4.5 Installation & Setup Documentation
+- [x] **Document KernelSU/root permission requirement** - App needs root access to initialize SharedPreferences
+- [x] **Document first-run requirement** - User must open HLFaker app once before hooks work (to create SharedPrefs)
+- [x] **Add troubleshooting section** - "NumberFormatException: s == null" means SharedPrefs are empty
 
 ---
 
@@ -349,13 +363,13 @@ The replacement files are copied from assets:
 - [ ] Telephony properties are faked correctly
 - [ ] GPS properties are faked correctly
 - [ ] WiFi properties are faked correctly
-- [ ] Battery properties are faked correctly
+- [x] Battery properties are faked correctly - **TESTED**: Temperature, Level working
 - [ ] Root cloaking works correctly
 - [ ] CPU/RAM info is faked correctly
 
 ### 5.3 LSPosed Specific Testing ⏳
-- [ ] Module scope can be configured
-- [ ] Preferences are readable by hook process
+- [x] Module scope can be configured - **TESTED**
+- [x] Preferences are readable by hook process - **TESTED** (requires MainActivity to run first)
 - [ ] Module works in both global and per-app mode
 
 ---
