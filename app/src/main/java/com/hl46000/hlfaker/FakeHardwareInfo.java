@@ -17,7 +17,33 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import com.hl46000.hlfaker.SharedPref;
+
+/**
+ * FakeHardwareInfo - Hooks hardware-related APIs (Bluetooth, WiFi, Telephony, CPU files).
+ * 
+ * Uses default values to prevent crashes when SharedPreferences are not initialized.
+ * Default values match the Samsung Galaxy S4 (GT-I9505) fingerprint.
+ */
 public class FakeHardwareInfo {
+    
+    // Default values for WiFi/Bluetooth
+    private static final String DEFAULT_WIFI_MAC = "6C:C4:08:BB:B1:28";
+    private static final String DEFAULT_WIFI_SSID = "MyWifi";
+    private static final String DEFAULT_BSSID = "6C:C4:08:BB:B1:28";
+    
+    // Default values for Telephony
+    private static final String DEFAULT_IMEI = "506066104722640";
+    private static final String DEFAULT_IMSI = "452011234567890";
+    private static final String DEFAULT_PHONE_NUMBER = "84962439943";
+    private static final String DEFAULT_SIM_SERIAL = "36066104722647215170";
+    private static final String DEFAULT_CARRIER = "Mobifone";
+    private static final String DEFAULT_CARRIER_CODE = "45201";
+    private static final String DEFAULT_COUNTRY_CODE = "VN";
+    
+    // Default values for System/OS
+    private static final String DEFAULT_OS_NAME = "Linux";
+    private static final String DEFAULT_OS_ARCH = "armv7l";
+    private static final String DEFAULT_OS_VERSION = "3.4.0-gd59db4e";
 
 	public FakeHardwareInfo(LoadPackageParam sharePkgParam){
 		FakeBluetooth(sharePkgParam);
@@ -196,19 +222,19 @@ public class FakeHardwareInfo {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
 					if (param.args[0] != null) {
-	                    String[] strArr = (String[]) param.args[0];
-	                    String str = "";
-	                    for (String str2 : strArr) {
-	                        str = new StringBuilder(String.valueOf(str)).append(str2).append(":").toString();
-	                        if (str2 == "/proc/cpuinfo") {
-	                            strArr[1] = "/data/misc/sys/cpuinfo";
-	                        }
-	                        if (str2 == "/proc/version") {
-	                            strArr[1] = "/data/misc/sys/version";
-	                        }
-	                    }
-	                    param.args[0] = strArr;
-	                }
+                    String[] strArr = (String[]) param.args[0];
+                    String str = "";
+                    for (String str2 : strArr) {
+                        str = new StringBuilder(String.valueOf(str)).append(str2).append(":").toString();
+                        if (str2 == "/proc/cpuinfo") {
+                            strArr[1] = "/data/misc/sys/cpuinfo";
+                        }
+                        if (str2 == "/proc/version") {
+                            strArr[1] = "/data/misc/sys/version";
+                        }
+                    }
+                    param.args[0] = strArr;
+                }
 				}
             	
 			});
@@ -253,7 +279,7 @@ public class FakeHardwareInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.afterHookedMethod(param);
-					param.setResult(SharedPref.getXValue("WifiMAC"));
+					param.setResult(SharedPref.getXValue("WifiMAC", DEFAULT_WIFI_MAC));
 				}
 				
 			});
@@ -264,7 +290,7 @@ public class FakeHardwareInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					//super.afterHookedMethod(param);
-					param.setResult(SharedPref.getXValue("WifiMAC"));
+					param.setResult(SharedPref.getXValue("WifiMAC", DEFAULT_WIFI_MAC));
 				}
 				
 			});
@@ -282,7 +308,7 @@ public class FakeHardwareInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.afterHookedMethod(param);
-					param.setResult(SharedPref.getXValue("WifiMAC"));
+					param.setResult(SharedPref.getXValue("WifiMAC", DEFAULT_WIFI_MAC));
 				}
 				
 			});
@@ -293,7 +319,7 @@ public class FakeHardwareInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.afterHookedMethod(param);
-					param.setResult(SharedPref.getXValue("WifiName"));
+					param.setResult(SharedPref.getXValue("WifiName", DEFAULT_WIFI_SSID));
 				}
 				
 			});
@@ -304,7 +330,7 @@ public class FakeHardwareInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.afterHookedMethod(param);
-					param.setResult(SharedPref.getXValue("BSSID"));
+					param.setResult(SharedPref.getXValue("BSSID", DEFAULT_BSSID));
 				}
 				
 			});
@@ -315,16 +341,16 @@ public class FakeHardwareInfo {
 	
 	public void FakeTelephony(LoadPackageParam loadPkgParam){
 		String TelePhone = "android.telephony.TelephonyManager";
-		HookTelephony(TelePhone, loadPkgParam, "getDeviceId", SharedPref.getXValue("IMEI"));
-		HookTelephony(TelePhone, loadPkgParam, "getSubscriberId", SharedPref.getXValue("IMSI"));
-		HookTelephony(TelePhone, loadPkgParam, "getLine1Number", SharedPref.getXValue("PhoneNumber"));
-		HookTelephony(TelePhone, loadPkgParam, "getSimSerialNumber", SharedPref.getXValue("SimSerial"));
-		HookTelephony(TelePhone, loadPkgParam, "getNetworkOperator", SharedPref.getXValue("CarrierCode"));
-		HookTelephony(TelePhone, loadPkgParam, "getNetworkOperatorName", SharedPref.getXValue("Carrier"));
-		HookTelephony(TelePhone, loadPkgParam, "getSimOperator", SharedPref.getXValue("CarrierCode"));
-		HookTelephony(TelePhone, loadPkgParam, "getSimOperatorName", SharedPref.getXValue("Carrier"));
-		HookTelephony(TelePhone, loadPkgParam, "getNetworkCountryIso", SharedPref.getXValue("CountryCode"));
-		HookTelephony(TelePhone, loadPkgParam, "getSimCountryIso", SharedPref.getXValue("CountryCode"));
+		HookTelephony(TelePhone, loadPkgParam, "getDeviceId", SharedPref.getXValue("IMEI", DEFAULT_IMEI));
+		HookTelephony(TelePhone, loadPkgParam, "getSubscriberId", SharedPref.getXValue("IMSI", DEFAULT_IMSI));
+		HookTelephony(TelePhone, loadPkgParam, "getLine1Number", SharedPref.getXValue("PhoneNumber", DEFAULT_PHONE_NUMBER));
+		HookTelephony(TelePhone, loadPkgParam, "getSimSerialNumber", SharedPref.getXValue("SimSerial", DEFAULT_SIM_SERIAL));
+		HookTelephony(TelePhone, loadPkgParam, "getNetworkOperator", SharedPref.getXValue("CarrierCode", DEFAULT_CARRIER_CODE));
+		HookTelephony(TelePhone, loadPkgParam, "getNetworkOperatorName", SharedPref.getXValue("Carrier", DEFAULT_CARRIER));
+		HookTelephony(TelePhone, loadPkgParam, "getSimOperator", SharedPref.getXValue("CarrierCode", DEFAULT_CARRIER_CODE));
+		HookTelephony(TelePhone, loadPkgParam, "getSimOperatorName", SharedPref.getXValue("Carrier", DEFAULT_CARRIER));
+		HookTelephony(TelePhone, loadPkgParam, "getNetworkCountryIso", SharedPref.getXValue("CountryCode", DEFAULT_COUNTRY_CODE));
+		HookTelephony(TelePhone, loadPkgParam, "getSimCountryIso", SharedPref.getXValue("CountryCode", DEFAULT_COUNTRY_CODE));
 		//HookTelephony(TelePhone, loadPkgParam, "getDeviceId", SharedPref.getXValue("IMEI"));
 		try {
 			XposedHelpers.findAndHookMethod(System.class, "getProperty", String.class, new XC_MethodHook() {
@@ -334,14 +360,15 @@ public class FakeHardwareInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.afterHookedMethod(param);
-					if (param.args[0] == "os.version") {
-						param.setResult(SharedPref.getXValue("OSVersion"));
+					String arg = (String) param.args[0];
+					if ("os.version".equals(arg)) {
+						param.setResult(SharedPref.getXValue("OSVersion", DEFAULT_OS_VERSION));
 			        }
-			        if (param.args[0] == "os.arch") {
-			        	param.setResult(SharedPref.getXValue("OSArch"));
+			        if ("os.arch".equals(arg)) {
+			        	param.setResult(SharedPref.getXValue("OSArch", DEFAULT_OS_ARCH));
 			        }
-			        if (param.args[0] == "os.name") {
-			        	param.setResult(SharedPref.getXValue("OSName"));
+			        if ("os.name".equals(arg)) {
+			        	param.setResult(SharedPref.getXValue("OSName", DEFAULT_OS_NAME));
 			        }
 				}
 				

@@ -9,7 +9,19 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
+/**
+ * FakeEmail - Hooks AccountManager to return fake Gmail account.
+ * 
+ * Uses default values to prevent crashes when SharedPreferences are not initialized.
+ * Default values:
+ * - Email: hl.46000@gmail.com
+ * - Target Package: com.alibaba.aliexpresshd
+ */
 public class FakeEmail {
+    
+    // Default values
+    private static final String DEFAULT_EMAIL = "hl.46000@gmail.com";
+    private static final String DEFAULT_FAKE_EMAIL_PACKAGE = "com.alibaba.aliexpresshd";
 
 	public void fakeGmail(final LoadPackageParam loadPkgParam){
 		try {
@@ -20,8 +32,10 @@ public class FakeEmail {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.afterHookedMethod(param);
-					if (getPackage(SharedPref.getXValue("FakeEmailPackge"), loadPkgParam.packageName)) {
-						param.setResult(new Account[]{new Account(SharedPref.getXValue("Email"), "com.google")});
+					String fakeEmailPackage = SharedPref.getXValue("FakeEmailPackge", DEFAULT_FAKE_EMAIL_PACKAGE);
+					if (getPackage(fakeEmailPackage, loadPkgParam.packageName)) {
+						String email = SharedPref.getXValue("Email", DEFAULT_EMAIL);
+						param.setResult(new Account[]{new Account(email, "com.google")});
 			        }
 				}
 				
@@ -33,8 +47,10 @@ public class FakeEmail {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.afterHookedMethod(param);
-					if (getPackage(SharedPref.getXValue("FakeEmailPackge"), loadPkgParam.packageName)) {
-						param.setResult(new Account[]{new Account(SharedPref.getXValue("Email"), "com.google")});
+					String fakeEmailPackage = SharedPref.getXValue("FakeEmailPackge", DEFAULT_FAKE_EMAIL_PACKAGE);
+					if (getPackage(fakeEmailPackage, loadPkgParam.packageName)) {
+						String email = SharedPref.getXValue("Email", DEFAULT_EMAIL);
+						param.setResult(new Account[]{new Account(email, "com.google")});
 			        }
 				}
 				

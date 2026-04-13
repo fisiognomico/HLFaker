@@ -36,11 +36,20 @@ import com.hl46000.hlfaker.Common;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findConstructorExact;
 
+/**
+ * RootCloak - Hides root access from specified apps.
+ * 
+ * Uses default values from Common.java when SharedPreferences are not initialized.
+ * The default package to hide root from is defined in Common.DEFAULT_APPS_SET.
+ */
 public class RootCloak implements IXposedHookLoadPackage {
     private static final String FAKE_COMMAND = "FAKEJUNKCOMMAND";
     private static final String FAKE_FILE = "FAKEJUNKFILE";
     private static final String FAKE_PACKAGE = "FAKE.JUNK.PACKAGE";
     private static final String FAKE_APPLICATION = "FAKE.JUNK.APPLICATION";
+    
+    // Default package to hide root from
+    private static final String DEFAULT_HIDE_ROOT_PACKAGE = "com.alibaba.aliexpresshd";
 
     private Set<String> appSet;
     private Set<String> keywordSet;
@@ -634,12 +643,13 @@ public class RootCloak implements IXposedHookLoadPackage {
             commandSet.isEmpty();
             libnameSet.isEmpty();
 
-        	listApp = SharedPref.getXValue("HideRootPackge");
-        	if(listApp != null){
+        	// Use SharedPref.getXValue with default fallback
+        	listApp = SharedPref.getXValue("HideRootPackge", DEFAULT_HIDE_ROOT_PACKAGE);
+        	if(listApp != null && !listApp.isEmpty()){
         		appSet = new HashSet<String>(getAppset(listApp));
         	}else {
         		appSet = Common.DEFAULT_APPS_SET;
-			}
+		}
             if (keywordSet.isEmpty()) {
                 keywordSet = Common.DEFAULT_KEYWORD_SET;
             }

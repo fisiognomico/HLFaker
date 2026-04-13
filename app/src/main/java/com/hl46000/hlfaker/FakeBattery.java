@@ -9,7 +9,25 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import com.hl46000.hlfaker.SharedPref;
 
+/**
+ * FakeBattery - Hooks battery-related APIs to return fake values.
+ * 
+ * Uses default values from SharedPref to prevent crashes when
+ * MainActivity hasn't been run yet.
+ * 
+ * Default values (from R.string resources):
+ * - Temperature: 350 (35.0°C)
+ * - Level: 35 (35%)
+ * - Plugged: random(0-2)
+ * - Status: random(2-4)
+ * - Health: 2 (Good)
+ */
 public class FakeBattery {
+    
+    // Default battery values - matching R.string resources
+    private static final String DEFAULT_TEMP = "350";
+    private static final String DEFAULT_LEVEL = "35";
+    private static final String DEFAULT_HEALTH = "2";
 
 	// Fake trang thai cua Pin
 	public void fakePinStt(LoadPackageParam loadPkgParam) {
@@ -22,21 +40,26 @@ public class FakeBattery {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
 					if (param.args[0] != null) {
-            if (param.args[0].equals("temperature")) {
-                        param.setResult(Integer.valueOf(SharedPref.getXValue("Temp")));
-                    }
-                    if (param.args[0].equals("level")) {
-                        param.setResult(Integer.valueOf(SharedPref.getXValue("Level")));
-                    }
-                    if (param.args[0].equals("plugged")) {
-                        param.setResult(Integer.valueOf(random02()));
-                    }
-                    if (param.args[0].equals("status")) {
-                        param.setResult(Integer.valueOf(random24()));
-                    }
-                    if (param.args[0].equals("health")) {
-                        param.setResult(Integer.valueOf("2"));
-                    }
+                        String key = (String) param.args[0];
+                        if (key.equals("temperature")) {
+                            // Use SharedPref.getXValue with default to prevent crashes
+                            String tempValue = SharedPref.getXValue("Temp", DEFAULT_TEMP);
+                            param.setResult(Integer.valueOf(Integer.parseInt(tempValue)));
+                        }
+                        if (key.equals("level")) {
+                            // Use SharedPref.getXValue with default to prevent crashes
+                            String levelValue = SharedPref.getXValue("Level", DEFAULT_LEVEL);
+                            param.setResult(Integer.valueOf(Integer.parseInt(levelValue)));
+                        }
+                        if (key.equals("plugged")) {
+                            param.setResult(Integer.valueOf(random02()));
+                        }
+                        if (key.equals("status")) {
+                            param.setResult(Integer.valueOf(random24()));
+                        }
+                        if (key.equals("health")) {
+                            param.setResult(Integer.valueOf(DEFAULT_HEALTH));
+                        }
 			        }
 				}
 				

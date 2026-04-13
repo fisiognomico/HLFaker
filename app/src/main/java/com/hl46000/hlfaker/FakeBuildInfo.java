@@ -23,10 +23,50 @@ import de.robv.android.xposed.XposedHelpers.ClassNotFoundError;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import de.robv.android.xposed.XC_MethodHook.MethodHookParam;
 
+/**
+ * FakeBuildInfo - Hooks Build properties, GPS, Android ID, IMEI, and related APIs.
+ * 
+ * Uses default values to prevent crashes when SharedPreferences are not initialized.
+ * Default values match the Samsung Galaxy S4 (GT-I9505) fingerprint.
+ */
 public class FakeBuildInfo {
+    
+    // Default values for Build properties (matching R.string resources)
+    private static final String DEFAULT_BOARD = "MSM8960";
+    private static final String DEFAULT_BRAND = "samsung";
+    private static final String DEFAULT_ABI = "armeabi-v7a";
+    private static final String DEFAULT_ABI2 = "armeabi";
+    private static final String DEFAULT_DEVICE = "jflte";
+    private static final String DEFAULT_DISPLAY = "JSS15J.I9505XXUEML1";
+    private static final String DEFAULT_FINGERPRINT = "samsung/jfltexx/jflte:4.3/JSS15J/I9505XXUEML1:user/release-keys";
+    private static final String DEFAULT_HARDWARE = "jfltexx";
+    private static final String DEFAULT_ID = "JSS15J";
+    private static final String DEFAULT_MANUFACTURER = "samsung";
+    private static final String DEFAULT_MODEL = "GT-I9505";
+    private static final String DEFAULT_BOOTLOADER = "I9505XXUEML1";
+    private static final String DEFAULT_HOST = "kpfj3.cbf.corp.google.com";
+    private static final String DEFAULT_ANDROID_VERSION = "4.4.2";
+    private static final String DEFAULT_API_LEVEL = "19";
+    private static final String DEFAULT_CODENAME = "REL";
+    private static final String DEFAULT_DESCRIPTION = "jfltexx-user 4.3 JSS15J I9505XXUEML1 release-keys";
+    
+    // Default values for Telephony/ID properties
+    private static final String DEFAULT_IMEI = "506066104722640";
+    private static final String DEFAULT_ANDROID_ID = "6c0bb208c33b8c43";
+    private static final String DEFAULT_ANDROID_SERIAL = "6c0bb208c33b";
+    private static final String DEFAULT_GOOGLE_ADS_ID = "f741b85f-fbab-4eb3-8e44-358e07c3bc50";
+    private static final String DEFAULT_BASEBAND = "eng.administrator.1373289311";
+    
+    // Default values for GPS
+    private static final String DEFAULT_LATITUDE = "27.82516672";
+    private static final String DEFAULT_LONGITUDE = "125.06788613";
+    private static final String DEFAULT_ALTITUDE = "125.06";
+    private static final String DEFAULT_SPEED = "3.7";
+    
+    // Default User Agent
+    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Linux; Android 4.4.2; GT-I9505 Build/16.0.A.0.36) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/51.0.2704 Mobile Safari/537.36";
 
-	
-	public FakeBuildInfo(LoadPackageParam sharePkgParam){
+ 	public FakeBuildInfo(LoadPackageParam sharePkgParam){
 		FakeGPS(sharePkgParam);
 		FakeAndroidID(sharePkgParam);
 		FakeAndroidSerial(sharePkgParam);
@@ -49,7 +89,7 @@ public class FakeBuildInfo {
 							throws Throwable {
 						// TODO Auto-generated method stub
 						super.beforeHookedMethod(param);
-						param.args[0] = SharedPref.getXValue("UserAgent");
+						param.args[0] = SharedPref.getXValue("UserAgent", DEFAULT_USER_AGENT);
 					}
 					
 				});
@@ -70,14 +110,14 @@ public class FakeBuildInfo {
 						super.beforeHookedMethod(param);
 						XposedBridge.log("Load Url: " + param.args[0]);
 			            if (param.args.length > 0 && (param.thisObject instanceof WebView)) {
-			                String ua = SharedPref.getXValue("UserAgent");
+			                String ua = SharedPref.getXValue("UserAgent", DEFAULT_USER_AGENT);
 			                WebView webView = (WebView) param.thisObject;
 			                if (webView.getSettings() != null) {
 			                    webView.getSettings().setUserAgentString(ua);
 			                }
 			            }
 					}
-                	
+			    	
 				});
                 XposedBridge.hookMethod(loadUrl2, new XC_MethodHook() {
 
@@ -88,14 +128,14 @@ public class FakeBuildInfo {
 						super.beforeHookedMethod(param);
 						XposedBridge.log("load url: " + param.args[0]);
 			            if (param.args.length > 0 && (param.thisObject instanceof WebView)) {
-			                String ua = SharedPref.getXValue("UserAgent");
+			                String ua = SharedPref.getXValue("UserAgent", DEFAULT_USER_AGENT);
 			                WebView webView = (WebView) param.thisObject;
 			                if (webView.getSettings() != null) {
 			                    webView.getSettings().setUserAgentString(ua);
 			                }
 			            }
 					}
-                	
+			    	
 				});
                 
 			} catch (Exception e) {
@@ -114,7 +154,8 @@ public class FakeBuildInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
-					param.setResult(Float.valueOf(Float.parseFloat(SharedPref.getXValue("Lat"))));
+					String lat = SharedPref.getXValue("Lat", DEFAULT_LATITUDE);
+					param.setResult(Float.valueOf(Float.parseFloat(lat)));
 				}
 				
 			});
@@ -125,7 +166,8 @@ public class FakeBuildInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
-					param.setResult(Float.valueOf(Float.parseFloat(SharedPref.getXValue("Long"))));
+					String lng = SharedPref.getXValue("Long", DEFAULT_LONGITUDE);
+					param.setResult(Float.valueOf(Float.parseFloat(lng)));
 				}
 				
 			});
@@ -136,7 +178,8 @@ public class FakeBuildInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
-					param.setResult(Float.valueOf(Float.parseFloat(SharedPref.getXValue("Alt"))));
+					String alt = SharedPref.getXValue("Alt", DEFAULT_ALTITUDE);
+					param.setResult(Float.valueOf(Float.parseFloat(alt)));
 				}
 				
 			});
@@ -147,7 +190,8 @@ public class FakeBuildInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
-					param.setResult(Float.valueOf(Float.parseFloat(SharedPref.getXValue("Alt"))));
+					String alt = SharedPref.getXValue("Alt", DEFAULT_ALTITUDE);
+					param.setResult(Float.valueOf(Float.parseFloat(alt)));
 				}
 				
 			});
@@ -158,7 +202,8 @@ public class FakeBuildInfo {
 						throws Throwable {
 					// TODO Auto-generated method stub
 					super.beforeHookedMethod(param);
-					param.setResult(Float.valueOf(Float.parseFloat(SharedPref.getXValue("Speed"))));
+					String speed = SharedPref.getXValue("Speed", DEFAULT_SPEED);
+					param.setResult(Float.valueOf(Float.parseFloat(speed)));
 				}
 				
 			});
@@ -179,7 +224,7 @@ public class FakeBuildInfo {
 						throws Throwable {
 					
 					if (param.args[1].equals(Settings.Secure.ANDROID_ID)) {
-						param.setResult(SharedPref.getXValue("AndroidID"));
+						param.setResult(SharedPref.getXValue("AndroidID", DEFAULT_ANDROID_ID));
 					}					
 				}				
 			});
@@ -194,7 +239,7 @@ public class FakeBuildInfo {
 			Class<?> classBuild = XposedHelpers.findClass("android.os.Build",
 					loadPkgParam.classLoader);
 			XposedHelpers.setStaticObjectField(classBuild, "SERIAL",
-					SharedPref.getXValue("AndroidSerial"));
+					SharedPref.getXValue("AndroidSerial", DEFAULT_ANDROID_SERIAL));
 			Class<?> classSysProp = Class
 					.forName("android.os.SystemProperties");
 			XposedHelpers.findAndHookMethod(classSysProp, "get", String.class,
@@ -211,7 +256,7 @@ public class FakeBuildInfo {
 									|| serialno.equals("ro.boot.serialno")
 									|| serialno.equals("ril.serialnumber")
 									|| serialno.equals("sys.serialnumber")) {
-								param.setResult(SharedPref.getXValue("AndroidSerial"));
+								param.setResult(SharedPref.getXValue("AndroidSerial", DEFAULT_ANDROID_SERIAL));
 							}
 						}
 
@@ -230,7 +275,7 @@ public class FakeBuildInfo {
 									|| serialno.equals("ro.boot.serialno")
 									|| serialno.equals("ril.serialnumber")
 									|| serialno.equals("sys.serialnumber")) {
-								param.setResult(SharedPref.getXValue("AndroidSerial"));
+								param.setResult(SharedPref.getXValue("AndroidSerial", DEFAULT_ANDROID_SERIAL));
 							}
 						}
 
@@ -247,12 +292,13 @@ public class FakeBuildInfo {
 	
 	public void FakeIMEI(LoadPackageParam loadPkgParam){
 		try {
-			XposedHelpers.findAndHookMethod("android.telephony.TelephonyManager", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(SharedPref.getXValue("IMEI")));
-			XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneSubInfo", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(SharedPref.getXValue("IMEI")));
+			String imei = SharedPref.getXValue("IMEI", DEFAULT_IMEI);
+			XposedHelpers.findAndHookMethod("android.telephony.TelephonyManager", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
+			XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneSubInfo", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
 			
 			if(VERSION.SDK_INT < 22){
-				XposedHelpers.findAndHookMethod("com.android.internal.telephony.gsm.GSMPhone", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(SharedPref.getXValue("IMEI")));
-				XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneProxy", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(SharedPref.getXValue("IMEI")));
+				XposedHelpers.findAndHookMethod("com.android.internal.telephony.gsm.GSMPhone", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
+				XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneProxy", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
 			}		
 		} catch (Exception ex) {
 			XposedBridge.log("Fake IMEI ERROR: " + ex.getMessage());
@@ -289,7 +335,7 @@ public class FakeBuildInfo {
 						} else {
 							reply.setDataPosition(0);
 							reply.writeNoException();
-							reply.writeString(SharedPref.getXValue("GoogleAdsID"));
+							reply.writeString(SharedPref.getXValue("GoogleAdsID", DEFAULT_GOOGLE_ADS_ID));
 						}
 
 						param.setResult(Boolean.valueOf(true));
@@ -309,7 +355,7 @@ public class FakeBuildInfo {
 			if (Build.VERSION.SDK_INT <= 14) {
 				Class<?> classBuild = XposedHelpers.findClass(
 						"android.os.Build", loadPkgParam.classLoader);
-				XposedHelpers.setStaticObjectField(classBuild, "RADIO", SharedPref.getXValue("BaseBand"));
+				XposedHelpers.setStaticObjectField(classBuild, "RADIO", SharedPref.getXValue("BaseBand", DEFAULT_BASEBAND));
 			}else{			
 				XposedHelpers.findAndHookMethod("android.os.Build",
 						loadPkgParam.classLoader, "getRadioVersion", new XC_MethodHook() {
@@ -317,7 +363,7 @@ public class FakeBuildInfo {
 							@Override
 							protected void afterHookedMethod(MethodHookParam param)
 									throws Throwable {
-								param.setResult(SharedPref.getXValue("BaseBand"));
+								param.setResult(SharedPref.getXValue("BaseBand", DEFAULT_BASEBAND));
 							}
 
 						});
@@ -331,25 +377,25 @@ public class FakeBuildInfo {
 	
 	public void FakeBuildProp(LoadPackageParam loadPkgParam){
 		try {
-			XposedHelpers.findField(Build.class, "BOARD").set(null, SharedPref.getXValue("BOARD"));
-			XposedHelpers.findField(Build.class, "BRAND").set(null, SharedPref.getXValue("BRAND"));
-			XposedHelpers.findField(Build.class, "CPU_ABI").set(null, SharedPref.getXValue("ABI"));
-			XposedHelpers.findField(Build.class, "CPU_ABI2").set(null, SharedPref.getXValue("ABI2"));
-			XposedHelpers.findField(Build.class, "DEVICE").set(null, SharedPref.getXValue("DEVICE"));
-			XposedHelpers.findField(Build.class, "DISPLAY").set(null, SharedPref.getXValue("DISPLAY"));
-			XposedHelpers.findField(Build.class, "FINGERPRINT").set(null, SharedPref.getXValue("FINGERPRINT"));
-			XposedHelpers.findField(Build.class, "HARDWARE").set(null, SharedPref.getXValue("NAME"));
-			XposedHelpers.findField(Build.class, "ID").set(null, SharedPref.getXValue("ID"));
-			XposedHelpers.findField(Build.class, "MANUFACTURER").set(null, SharedPref.getXValue("Manufacture"));
-			XposedHelpers.findField(Build.class, "MODEL").set(null, SharedPref.getXValue("MODEL"));
-			XposedHelpers.findField(Build.class, "PRODUCT").set(null, SharedPref.getXValue("DEVICE"));
-			XposedHelpers.findField(Build.class, "BOOTLOADER").set(null, SharedPref.getXValue("BOOTLOADER"));
-			XposedHelpers.findField(Build.class, "HOST").set(null, "kpfj3.cbf.corp.google.com");
+			XposedHelpers.findField(Build.class, "BOARD").set(null, SharedPref.getXValue("BOARD", DEFAULT_BOARD));
+			XposedHelpers.findField(Build.class, "BRAND").set(null, SharedPref.getXValue("BRAND", DEFAULT_BRAND));
+			XposedHelpers.findField(Build.class, "CPU_ABI").set(null, SharedPref.getXValue("ABI", DEFAULT_ABI));
+			XposedHelpers.findField(Build.class, "CPU_ABI2").set(null, SharedPref.getXValue("ABI2", DEFAULT_ABI2));
+			XposedHelpers.findField(Build.class, "DEVICE").set(null, SharedPref.getXValue("DEVICE", DEFAULT_DEVICE));
+			XposedHelpers.findField(Build.class, "DISPLAY").set(null, SharedPref.getXValue("DISPLAY", DEFAULT_DISPLAY));
+			XposedHelpers.findField(Build.class, "FINGERPRINT").set(null, SharedPref.getXValue("FINGERPRINT", DEFAULT_FINGERPRINT));
+			XposedHelpers.findField(Build.class, "HARDWARE").set(null, SharedPref.getXValue("NAME", DEFAULT_HARDWARE));
+			XposedHelpers.findField(Build.class, "ID").set(null, SharedPref.getXValue("ID", DEFAULT_ID));
+			XposedHelpers.findField(Build.class, "MANUFACTURER").set(null, SharedPref.getXValue("Manufacture", DEFAULT_MANUFACTURER));
+			XposedHelpers.findField(Build.class, "MODEL").set(null, SharedPref.getXValue("MODEL", DEFAULT_MODEL));
+			XposedHelpers.findField(Build.class, "PRODUCT").set(null, SharedPref.getXValue("DEVICE", DEFAULT_DEVICE));
+			XposedHelpers.findField(Build.class, "BOOTLOADER").set(null, SharedPref.getXValue("BOOTLOADER", DEFAULT_BOOTLOADER));
+			XposedHelpers.findField(Build.class, "HOST").set(null, DEFAULT_HOST);
 			
-			XposedHelpers.findField(VERSION.class, "INCREMENTAL").set(null, SharedPref.getXValue("BOOTLOADER"));
-			XposedHelpers.findField(VERSION.class, "RELEASE").set(null, SharedPref.getXValue("AndroidVer"));
-			XposedHelpers.findField(VERSION.class, "SDK").set(null, SharedPref.getXValue("API"));
-			XposedHelpers.findField(VERSION.class, "CODENAME").set(null, "REL");
+			XposedHelpers.findField(VERSION.class, "INCREMENTAL").set(null, SharedPref.getXValue("BOOTLOADER", DEFAULT_BOOTLOADER));
+			XposedHelpers.findField(VERSION.class, "RELEASE").set(null, SharedPref.getXValue("AndroidVer", DEFAULT_ANDROID_VERSION));
+			XposedHelpers.findField(VERSION.class, "SDK").set(null, SharedPref.getXValue("API", DEFAULT_API_LEVEL));
+			XposedHelpers.findField(VERSION.class, "CODENAME").set(null, DEFAULT_CODENAME);
 			
 		} catch (IllegalAccessException e) {
 			XposedBridge.log("Fake BuilProp ERROR: " + e.getMessage());
@@ -371,8 +417,8 @@ public class FakeBuildInfo {
 							super.beforeHookedMethod(param);
 							
 							if (param.args.length > 0 && param.args[0] != null && param.args[0].equals("ro.build.description")) {
-								param.setResult(SharedPref.getXValue("DESCRIPTION"));
-					        }																					
+								param.setResult(SharedPref.getXValue("DESCRIPTION", DEFAULT_DESCRIPTION));
+					        }																
 						}						
 					});
 				}
