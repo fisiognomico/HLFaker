@@ -136,18 +136,30 @@
     <string name="default_user_agent" translatable="false">Mozilla/5.0 (Linux; Android 4.4.2; GT-I9505 Build/16.0.A.0.36) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/51.0.2704 Mobile Safari/537.36</string>
     
     <!-- ============================================================ -->
-    <!-- 15. Sensor Properties (Hardcoded in FakeOpenGL.java) -->
+    <!-- 15. Sensor Properties (FakeSensor.java) -->
     <!-- ============================================================ -->
-    <string name="default_sensor_vendor_bosch" translatable="false">BOSCH</string>
-    <string name="default_sensor_vendor_avago" translatable="false">AVAGO</string>
-    <string name="default_sensor_accelerometer" translatable="false">Accelerometer/Temperature/Double-tap</string>
-    <string name="default_sensor_gyroscope" translatable="false">Gyroscope</string>
-    <string name="default_sensor_magnetic" translatable="false">Magnetometer</string>
-    <string name="default_sensor_rotation" translatable="false">Rotation Vector</string>
-    <string name="default_sensor_gravity" translatable="false">Gravity</string>
-    <string name="default_sensor_linear_accel" translatable="false">Linear Acceleration</string>
-    <string name="default_sensor_orientation" translatable="false">Orientation</string>
-    <string name="default_sensor_corrected_gyro" translatable="false">APDS-9930/QPDS-T930 Proximity & Light||QTI@@Step Detector||QTI@@Gravity||QTI@@Linear Acceleration||QTI@@Rotation Vector||QTI@@Step Detector||QTI@@Step Counter||QTI@@Significant Motion Detector||QTI@@Game Rotation Vector||QTI@@GeoMagnetic Rotation Vector||QTI@@Orientation||QTI@@Tilt Detector</string>
+    <string name="default_sensor_vendor" translatable="false">Qualcomm</string>
+    <string name="default_accelerometer_name" translatable="false">Kionix KXTJ2-1009 3-axis Accelerometer</string>
+    <string name="default_gyroscope_name" translatable="false">InvenSense MPU-6050 6-axis Gyroscope</string>
+    <string name="default_magnetometer_name" translatable="false">AK09911C 3-axis Magnetic field sensor</string>
+    <string name="default_pressure_name" translatable="false">LPS331AP Pressure sensor</string>
+    <string name="default_proximity_name" translatable="false">APDS-9930/QPDS-T930 Proximity</string>
+    <string name="default_light_name" translatable="false">APDS-9930/QPDS-T930 Light</string>
+    <string name="default_step_detector_name" translatable="false">QTI Step Detector</string>
+    <string name="default_step_counter_name" translatable="false">QTI Step Counter</string>
+    <string name="default_significant_motion_name" translatable="false">QTI Significant Motion Detector</string>
+    <string name="default_gravity_name" translatable="false">QTI Gravity</string>
+    <string name="default_linear_acceleration_name" translatable="false">QTI Linear Acceleration</string>
+    <string name="default_rotation_vector_name" translatable="false">QTI Rotation Vector</string>
+    <string name="default_orientation_name" translatable="false">QTI Orientation</string>
+    <string name="default_game_rotation_vector_name" translatable="false">QTI Game Rotation Vector</string>
+    <string name="default_geomagnetic_rotation_vector_name" translatable="false">QTI GeoMagnetic Rotation Vector</string>
+    
+    <!-- Sensor Jitter Configuration (Gaussian noise parameters) -->
+    <!-- Mean: Center of noise distribution (typically 0.0) -->
+    <!-- StdDev: Standard deviation / magnitude of noise (higher = more jitter) -->
+    <string name="default_sensor_jitter_mean" translatable="false">0.0</string>
+    <string name="default_sensor_jitter_std_dev" translatable="false">0.05</string>
     
     <!-- ============================================================ -->
     <!-- 16. RAM Properties (Random values) -->

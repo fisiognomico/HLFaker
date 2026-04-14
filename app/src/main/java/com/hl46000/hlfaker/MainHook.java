@@ -10,6 +10,7 @@ import com.hl46000.hlfaker.FakeHardwareInfo;
 import com.hl46000.hlfaker.FakeNetwork;
 import com.hl46000.hlfaker.FakeOpenGL;
 import com.hl46000.hlfaker.FakeRAM;
+import com.hl46000.hlfaker.FakeSensor;
 import com.hl46000.hlfaker.RootCloak;
 import com.hl46000.hlfaker.FakeCPU;
 import com.hl46000.hlfaker.FakeDebugFlags;
@@ -29,6 +30,7 @@ public class MainHook implements IXposedHookLoadPackage {
 		new FakeHardwareInfo(sharePkgParam);
 		new FakeBuildInfo(sharePkgParam);
 		new FakeOpenGL().FakeDisplay(sharePkgParam);
+		new FakeSensor(sharePkgParam);
 		new FakeEmail().fakeGmail(sharePkgParam);
 		new RootCloak().handleLoadPackage(sharePkgParam);
 		new FakeCPU(sharePkgParam);	

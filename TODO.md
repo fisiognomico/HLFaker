@@ -493,7 +493,7 @@ The replacement files are copied from assets:
 
 ### 8.4 Sensor Enhancements
 
-- [ ] **Make Sensor vendor/name configurable**
+- [x] **Make Sensor vendor/name configurable**
   - File: `FakeOpenGL.java` (or create `FakeSensor.java`)
   - Currently random between "BOSCH"/"AVAGO"
   - Add SharedPref keys:
@@ -505,7 +505,7 @@ The replacement files are copied from assets:
   - Update `defaults.xml` with realistic sensor names
   - Hook `Sensor.getName()` and `Sensor.getVendor()` methods
 
-- [ ] **Add sensor value jitter for SENSOR_VARIANCE mitigation**
+- [x] **Add sensor value jitter for SENSOR_VARIANCE mitigation**
   - File: `FakeSensor.java` (new file)
   - Problem: Apps detect emulators by checking if sensor values have zero variance (static)
   - Solution: Add realistic Gaussian noise/jitter to sensor event values
