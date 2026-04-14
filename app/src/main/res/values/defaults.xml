@@ -30,7 +30,10 @@
     <string name="default_api_level" translatable="false">19</string>
     <string name="default_version_codename" translatable="false">REL</string>
     <string name="default_build_description" translatable="false">jfltexx-user 4.3 JSS15J I9505XXUEML1 release-keys</string>
-    <string name="default_baseband" translatable="false">eng.administrator.1373289311</string>
+    <string name="default_baseband" translatable="false">g5123b-145971-250328-B-13284995</string>
+    <string name="default_build_host" translatable="false">72262b77b5e8</string>
+    <string name="default_build_tags" translatable="false">release-keys</string>
+    <string name="default_supported_abis" translatable="false">armeabi-v7a,armeabi</string>
     
     <!-- ============================================================ -->
     <!-- 2. Telephony Properties (IMEI, IMSI, Phone Number, etc.) -->
@@ -41,7 +44,11 @@
     <string name="default_sim_serial" translatable="false">36066104722647215170</string>
     <string name="default_carrier" translatable="false">Mobifone</string>
     <string name="default_carrier_code" translatable="false">45201</string>
+    <string name="default_carrier_mcc" translatable="false">452</string>
+    <string name="default_carrier_mnc" translatable="false">01</string>
     <string name="default_country_code" translatable="false">VN</string>
+    <string name="default_voicemail_number" translatable="false">84962439944</string>
+    <string name="default_sim_state" translatable="false">5</string>
     
     <!-- ============================================================ -->
     <!-- 3. Android ID & Serial Properties -->
@@ -151,4 +158,11 @@
     <string name="default_debuggable" translatable="false">0</string>
     <string name="default_native_bridge" translatable="false"></string>
     <string name="default_init_svc_qemu" translatable="false"></string>
+    
+    <!-- ============================================================ -->
+    <!-- 17. Bluetooth Properties -->
+    <!-- ============================================================ -->
+    <string name="default_bluetooth_name" translatable="false">Pixel 6a</string>
+    <string name="default_bluetooth_address" translatable="false"></string>
+    <string name="default_bluetooth_enabled" translatable="false">false</string>
 </resources>

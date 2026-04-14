@@ -44,7 +44,7 @@ public class FakeBuildInfo {
     private static final String DEFAULT_MANUFACTURER = "samsung";
     private static final String DEFAULT_MODEL = "GT-I9505";
     private static final String DEFAULT_BOOTLOADER = "I9505XXUEML1";
-    private static final String DEFAULT_HOST = "kpfj3.cbf.corp.google.com";
+    private static final String DEFAULT_HOST = "72262b77b5e8";
     private static final String DEFAULT_ANDROID_VERSION = "4.4.2";
     private static final String DEFAULT_API_LEVEL = "19";
     private static final String DEFAULT_CODENAME = "REL";
@@ -55,7 +55,9 @@ public class FakeBuildInfo {
     private static final String DEFAULT_ANDROID_ID = "6c0bb208c33b8c43";
     private static final String DEFAULT_ANDROID_SERIAL = "6c0bb208c33b";
     private static final String DEFAULT_GOOGLE_ADS_ID = "f741b85f-fbab-4eb3-8e44-358e07c3bc50";
-    private static final String DEFAULT_BASEBAND = "eng.administrator.1373289311";
+    private static final String DEFAULT_BASEBAND = "g5123b-145971-250328-B-13284995";
+    private static final String DEFAULT_TAGS = "release-keys";
+    private static final String DEFAULT_SUPPORTED_ABIS = "armeabi-v7a,armeabi";
     
     // Default values for GPS
     private static final String DEFAULT_LATITUDE = "27.82516672";
@@ -389,8 +391,27 @@ public class FakeBuildInfo {
 			XposedHelpers.findField(Build.class, "MANUFACTURER").set(null, SharedPref.getXValue("Manufacture", DEFAULT_MANUFACTURER));
 			XposedHelpers.findField(Build.class, "MODEL").set(null, SharedPref.getXValue("MODEL", DEFAULT_MODEL));
 			XposedHelpers.findField(Build.class, "PRODUCT").set(null, SharedPref.getXValue("DEVICE", DEFAULT_DEVICE));
-			XposedHelpers.findField(Build.class, "BOOTLOADER").set(null, SharedPref.getXValue("BOOTLOADER", DEFAULT_BOOTLOADER));
-			XposedHelpers.findField(Build.class, "HOST").set(null, DEFAULT_HOST);
+            XposedHelpers.findField(Build.class, "BOOTLOADER").set(null, SharedPref.getXValue("BOOTLOADER", DEFAULT_BOOTLOADER));
+            XposedHelpers.findField(Build.class, "HOST").set(null, SharedPref.getXValue("BuildHost", DEFAULT_HOST));
+            
+            // Build.TAGS - returns "release-keys" not "test-keys"
+            try {
+                XposedHelpers.findField(Build.class, "TAGS").set(null, SharedPref.getXValue("BuildTags", DEFAULT_TAGS));
+            } catch (Exception e) {
+                XposedBridge.log("Fake TAGS ERROR: " + e.getMessage());
+            }
+            
+            // Build.SUPPORTED_ABIS - returns ARM ABIs (not x86) - API 21+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                try {
+                    String supportedAbisStr = SharedPref.getXValue("SupportedABIs", DEFAULT_SUPPORTED_ABIS);
+                    String[] supportedAbis = supportedAbisStr.split(",");
+                    XposedHelpers.findField(Build.class, "SUPPORTED_ABIS").set(null, supportedAbis);
+                    XposedHelpers.findField(Build.class, "SUPPORTED_32_BIT_ABIS").set(null, supportedAbis);
+                } catch (Exception e) {
+                    XposedBridge.log("Fake SUPPORTED_ABIS ERROR: " + e.getMessage());
+                }
+            }
 			
 			XposedHelpers.findField(VERSION.class, "INCREMENTAL").set(null, SharedPref.getXValue("BOOTLOADER", DEFAULT_BOOTLOADER));
 			XposedHelpers.findField(VERSION.class, "RELEASE").set(null, SharedPref.getXValue("AndroidVer", DEFAULT_ANDROID_VERSION));

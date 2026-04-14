@@ -97,7 +97,14 @@ public class MainActivity extends Activity {
         mySP.setSharedPref("OSName", "Linux");
         mySP.setSharedPref("OSArch", "armv7l");
         mySP.setSharedPref("OSVersion", "3.4.0-gd59db4e");
-        mySP.setSharedPref("BaseBand", "eng.administrator.1373289311");
+        mySP.setSharedPref("BaseBand", "g5123b-145971-250328-B-13284995");
+        mySP.setSharedPref("BuildHost", "72262b77b5e8");
+        mySP.setSharedPref("BuildTags", "release-keys");
+        mySP.setSharedPref("SupportedABIs", "armeabi-v7a,armeabi");
+        mySP.setSharedPref("CarrierCodeMCC", "452");
+        mySP.setSharedPref("CarrierCodeMNC", "01");
+        mySP.setSharedPref("VoiceMailNumber", "84962439944");
+        mySP.setSharedPref("SimState", "5");
         mySP.setSharedPref("FakeEmailPackge", "com.alibaba.aliexpresshd");
         mySP.setSharedPref("HideRootPackge", "com.alibaba.aliexpresshd");
         mySP.setSharedPref("Email", "hl.46000@gmail.com");

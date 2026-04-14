@@ -39,6 +39,8 @@ public class FakeHardwareInfo {
     private static final String DEFAULT_CARRIER = "Mobifone";
     private static final String DEFAULT_CARRIER_CODE = "45201";
     private static final String DEFAULT_COUNTRY_CODE = "VN";
+    private static final String DEFAULT_VOICEMAIL_NUMBER = "84962439944";
+    private static final String DEFAULT_SIM_STATE = "5"; // SIM_STATE_READY
     
     // Default values for System/OS
     private static final String DEFAULT_OS_NAME = "Linux";
@@ -345,12 +347,43 @@ public class FakeHardwareInfo {
 		HookTelephony(TelePhone, loadPkgParam, "getSubscriberId", SharedPref.getXValue("IMSI", DEFAULT_IMSI));
 		HookTelephony(TelePhone, loadPkgParam, "getLine1Number", SharedPref.getXValue("PhoneNumber", DEFAULT_PHONE_NUMBER));
 		HookTelephony(TelePhone, loadPkgParam, "getSimSerialNumber", SharedPref.getXValue("SimSerial", DEFAULT_SIM_SERIAL));
-		HookTelephony(TelePhone, loadPkgParam, "getNetworkOperator", SharedPref.getXValue("CarrierCode", DEFAULT_CARRIER_CODE));
+		
+		// Carrier Code: use separate MCC/MNC or fall back to combined CarrierCode
+		String carrierCode = SharedPref.getXValue("CarrierCode", DEFAULT_CARRIER_CODE);
+		String mcc = SharedPref.getXValue("CarrierCodeMCC", "");
+		String mnc = SharedPref.getXValue("CarrierCodeMNC", "");
+		if (!mcc.isEmpty() && !mnc.isEmpty()) {
+			carrierCode = mcc + mnc;
+		}
+		
+		HookTelephony(TelePhone, loadPkgParam, "getNetworkOperator", carrierCode);
 		HookTelephony(TelePhone, loadPkgParam, "getNetworkOperatorName", SharedPref.getXValue("Carrier", DEFAULT_CARRIER));
-		HookTelephony(TelePhone, loadPkgParam, "getSimOperator", SharedPref.getXValue("CarrierCode", DEFAULT_CARRIER_CODE));
+		HookTelephony(TelePhone, loadPkgParam, "getSimOperator", carrierCode);
 		HookTelephony(TelePhone, loadPkgParam, "getSimOperatorName", SharedPref.getXValue("Carrier", DEFAULT_CARRIER));
 		HookTelephony(TelePhone, loadPkgParam, "getNetworkCountryIso", SharedPref.getXValue("CountryCode", DEFAULT_COUNTRY_CODE));
 		HookTelephony(TelePhone, loadPkgParam, "getSimCountryIso", SharedPref.getXValue("CountryCode", DEFAULT_COUNTRY_CODE));
+		
+		// New telephony hooks for emulator detection bypass
+		HookTelephony(TelePhone, loadPkgParam, "getVoiceMailNumber", SharedPref.getXValue("VoiceMailNumber", DEFAULT_VOICEMAIL_NUMBER));
+		
+		// Hook getSimState to return SIM_STATE_READY (5) instead of SIM_STATE_ABSENT (1)
+		try {
+			XposedHelpers.findAndHookMethod(TelePhone, loadPkgParam.classLoader, "getSimState", new XC_MethodHook() {
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+					super.afterHookedMethod(param);
+					String simStateStr = SharedPref.getXValue("SimState", DEFAULT_SIM_STATE);
+					try {
+						int simState = Integer.parseInt(simStateStr);
+						param.setResult(simState);
+					} catch (NumberFormatException e) {
+						param.setResult(5); // Default to SIM_STATE_READY
+					}
+				}
+			});
+		} catch (Exception e) {
+			XposedBridge.log("Fake getSimState ERROR: " + e.getMessage());
+		}
 		//HookTelephony(TelePhone, loadPkgParam, "getDeviceId", SharedPref.getXValue("IMEI"));
 		try {
 			XposedHelpers.findAndHookMethod(System.class, "getProperty", String.class, new XC_MethodHook() {

@@ -3,6 +3,7 @@ package com.hl46000.hlfaker;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import com.hl46000.hlfaker.FakeBattery;
+import com.hl46000.hlfaker.FakeBluetooth;
 import com.hl46000.hlfaker.FakeBuildInfo;
 import com.hl46000.hlfaker.FakeEmail;
 import com.hl46000.hlfaker.FakeHardwareInfo;
@@ -22,6 +23,7 @@ public class MainHook implements IXposedHookLoadPackage {
 		new FakeSystemProperties(sharePkgParam);
 		new FakeDebugFlags(sharePkgParam);
 		new FakeBattery().fakePinStt(sharePkgParam);
+		new FakeBluetooth(sharePkgParam);
 		new FakeHardwareInfo(sharePkgParam);
 		new FakeBuildInfo(sharePkgParam);
 		new FakeOpenGL().FakeDisplay(sharePkgParam);

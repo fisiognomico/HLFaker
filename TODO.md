@@ -176,12 +176,16 @@ The project now uses Gradle build system (migrated from Eclipse/ANT).
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
 | IMEI | IMEI | 506066104722640 | Device IMEI |
-| IMSI | IMSI | (from SharedPref) | Subscriber ID |
+| IMSI | IMSI | 452011234567890 | Subscriber ID |
 | Phone Number | PhoneNumber | 84962439943 | Line number |
 | Sim Serial | SimSerial | 36066104722647215170 | SIM serial number |
 | Carrier | Carrier | Mobifone | Network operator name |
-| Carrier Code | CarrierCode | 45201 | MCC/MNC |
+| Carrier Code | CarrierCode | 45201 | Combined MCC/MNC (configurable via MCC/MNC) |
+| Carrier MCC | CarrierCodeMCC | 452 | Mobile Country Code |
+| Carrier MNC | CarrierCodeMNC | 01 | Mobile Network Code |
 | Country Code | CountryCode | VN | ISO country code |
+| Voice Mail Number | VoiceMailNumber | 84962439944 | Voicemail number |
+| SIM State | SimState | 5 | SIM_STATE_READY (5)
 
 ### 3.3 Android ID & Serial Properties (FakeBuildInfo.java)
 
@@ -210,20 +214,30 @@ The project now uses Gradle build system (migrated from Eclipse/ANT).
 | BSSID | BSSID | 6C:C4:08:BB:B1:28 | Access point BSSID |
 | Bluetooth MAC | WifiMAC | 6C:C4:08:BB:B1:28 | Bluetooth address (same as WiFi) |
 
-### 3.6 OpenGL Properties (FakeOpenGL.java)
+### 3.6 Bluetooth Properties (FakeBluetooth.java)
+
+| Property | SharedPref Key | Default Value | Description |
+|----------|----------------|---------------|-------------|
+| Bluetooth Name | BluetoothName | Pixel 6a | Device name (from real Pixel 6a) |
+| Bluetooth Address | BluetoothAddress | (empty) | MAC address (unavailable when disabled) |
+| Bluetooth Enabled | BluetoothEnabled | false | Whether Bluetooth appears enabled |
+
+**Note:** On a real Pixel 6a device, even when Bluetooth is turned off, `BluetoothManager` returns `State: BLE_ON`. However, this implementation intentionally returns everything OFF to maintain consistency.
+
+### 3.7 OpenGL Properties (FakeOpenGL.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
 | GL Vendor | GLVendor | Qualcomm | OpenGL vendor |
 | GL Renderer | GLRenderer | Adreno (TM) 330 | OpenGL renderer |
 
-### 3.7 Display Properties (FakeOpenGL.java)
+### 3.8 Display Properties (FakeOpenGL.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
 | DPI | DPI | 320 | Screen density |
 
-### 3.8 Battery Properties (FakeBattery.java)
+### 3.9 Battery Properties (FakeBattery.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
@@ -233,7 +247,7 @@ The project now uses Gradle build system (migrated from Eclipse/ANT).
 | Status | - | random(2-4) | Battery status |
 | Health | - | 2 | Battery health |
 
-### 3.9 CPU Properties (FakeCPU.java)
+### 3.10 CPU Properties (FakeCPU.java)
 
 | Property | Value | Description |
 |----------|-------|-------------|
@@ -242,7 +256,7 @@ The project now uses Gradle build system (migrated from Eclipse/ANT).
 
 **Note:** These are hardcoded specifically for Hearthstone app (`com.blizzard.wtcg.hearthstone.MinSpecCheck`)
 
-### 3.10 RAM Properties (FakeRAM.java)
+### 3.11 RAM Properties (FakeRAM.java)
 
 | Property | Values | Description |
 |----------|--------|-------------|
@@ -258,20 +272,20 @@ The project now uses Gradle build system (migrated from Eclipse/ANT).
 | os.arch | OSArch | armv7l | OS architecture |
 | os.version | OSVersion | 3.4.0-gd59db4e | OS version |
 
-### 3.12 Email Properties (FakeEmail.java)
+### 3.13 Email Properties (FakeEmail.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
 | Gmail Account | Email | hl.46000@gmail.com | Google account email |
 | Target Package | FakeEmailPackge | com.alibaba.aliexpresshd | Package to fake email for |
 
-### 3.13 Root Cloak Properties (RootCloak.java)
+### 3.14 Root Cloak Properties (RootCloak.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
 | Hide Root Packages | HideRootPackge | com.alibaba.aliexpresshd | Packages to hide root from |
 
-### 3.14 CPU Info File Override (FakeHardwareInfo.java)
+### 3.15 CPU Info File Override (FakeHardwareInfo.java)
 
 | File | Replacement Path | Description |
 |------|------------------|-------------|
@@ -282,7 +296,7 @@ The replacement files are copied from assets:
 - `assets/cpuinfo` - ARMv7 Qualcomm MSM 8974 processor info
 - `assets/version` - Linux 3.4.0 kernel info
 
-### 3.15 Sensor Properties (FakeOpenGL.java)
+### 3.16 Sensor Properties (FakeOpenGL.java)
 
 | Sensor | Fake Value | Description |
 |--------|------------|-------------|
@@ -296,17 +310,20 @@ The replacement files are copied from assets:
 | Orientation | "Orientation" | Sensor name |
 | Corrected Gyroscope | Long multi-sensor string | Sensor name |
 
-### 3.16 User Agent (FakeBuildInfo.java)
+### 3.17 User Agent (FakeBuildInfo.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
 | User Agent | UserAgent | Mozilla/5.0 (Linux; Android 4.4.2; GT-I9505 Build/16.0.A.0.36) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/51.0.2704 Mobile Safari/537.36 | WebView User Agent |
 
-### 3.17 Baseband/Radio (FakeBuildInfo.java)
+### 3.18 Baseband/Radio (FakeBuildInfo.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
-| Baseband | BaseBand | eng.administrator.1373289311 | Radio/baseband version |
+| Baseband | BaseBand | g5123b-145971-250328-B-13284995 | Radio/baseband version |
+| Build Host | BuildHost | 72262b77b5e8 | Build host identifier |
+| Build Tags | BuildTags | release-keys | Build tags (vs test-keys) |
+| Supported ABIs | SupportedABIs | armeabi-v7a,armeabi | ARM ABIs (API 21+)|
 
 ---
 
@@ -412,22 +429,23 @@ The replacement files are copied from assets:
 
 ## 8. Emulator Detection Bypass - New Implementations
 
-### 8.1 Build Properties Enhancements
+### 8.1 Build Properties Enhancements ✅
 
-- [ ] **Add missing Build property hooks**
+- [x] **Add missing Build property hooks**
   - Files: `FakeBuildInfo.java`, `defaults.xml`, `MainActivity.java`
-  - Properties to add:
+  - Properties added:
     - `Build.getRadioVersion()` / `Build.RADIO` - Returns fake radio/baseband version
     - `Build.SUPPORTED_ABIS` / `Build.CPU_ABI` - Returns ARM ABIs (not x86)
     - `Build.TAGS` - Returns "release-keys" (not "test-keys")
-  - Add SharedPref keys: `BuildRadio`, `SupportedABIs`, `BuildTags`
-  - Add default values to `defaults.xml`
+  - Added SharedPref keys: `BuildRadio`, `SupportedABIs`, `BuildTags`
+  - Added default values to `defaults.xml`
 
-- [ ] **Make Build.HOST configurable**
-  - Currently hardcoded as "kpfj3.cbf.corp.google.com"
-  - Add SharedPref key: `BuildHost`
-  - Update `defaults.xml` with realistic build host (e.g., " BuildHost": "android-build")
-  - Update `FakeBuildInfo.java` to read from SharedPref
+- [x] **Make Build.HOST configurable**
+  - Previously hardcoded as "kpfj3.cbf.corp.google.com"
+  - Added SharedPref key: `BuildHost`
+  - Updated `defaults.xml` with realistic build host: "72262b77b5e8"
+  - Updated `FakeBuildInfo.java` to read from SharedPref
+  - Updated baseband default to: `g5123b-145971-250328-B-13284995`
 
 ### 8.2 System Properties Hook (CRITICAL)
 
@@ -450,32 +468,27 @@ The replacement files are copied from assets:
   - Add all properties to `defaults.xml`
   - Add hook registration in `MainHook.java`
 
-### 8.3 Telephony Enhancements
+### 8.3 Telephony Enhancements ✅
 
-- [ ] **Add missing telephony hooks**
+- [x] **Add missing telephony hooks**
   - File: `FakeHardwareInfo.java`
-  - Methods to hook:
+  - Methods hooked:
     - `TelephonyManager.getVoiceMailNumber()` - Returns fake voicemail number (not 15552175049)
-    - `TelephonyManager.getSimState()` - Returns `SIM_STATE_READY` (1) not `SIM_STATE_ABSENT` (1)
-  - Add SharedPref keys: `VoiceMailNumber`, `SimState`
-  - Add defaults to `defaults.xml`
+    - `TelephonyManager.getSimState()` - Returns `SIM_STATE_READY` (5) not `SIM_STATE_ABSENT` (1)
+  - Added SharedPref keys: `VoiceMailNumber`, `SimState`
+  - Added defaults to `defaults.xml`: VoiceMailNumber="84962439944", SimState="5"
 
-- [ ] **Intercept known AVD default value comparisons**
-  - File: `FakeHardwareInfo.java` or new helper
-  - Intercept string comparisons for:
-    - "000000000000000" (15 zeros IMEI)
-    - "310260000000000" (AVD IMSI)
-    - "15555215554" (AVD phone number)
-    - "15552175049" (AVD voicemail)
-    - "89014103211118510720" (AVD ICCID)
-  - Return "not equals" when comparing against these values
-
-- [ ] **Make Carrier Code configurable**
-  - Currently hardcoded "45201"
-  - Add SharedPref keys: `CarrierCodeMCC` (e.g., "452") and `CarrierCodeMNC` (e.g., "01")
-  - Update `TelephonyManager.getNetworkOperator()` to return combined MCC+MNC
-  - Update `defaults.xml` with realistic values
-  - Update section 3.2 documentation
+- [x] **Make Carrier Code configurable**
+  - Previously hardcoded "45201"
+  - Added SharedPref keys: `CarrierCodeMCC` (e.g., "452") and `CarrierCodeMNC` (e.g., "01")
+  - Updated `TelephonyManager.getNetworkOperator()` to return combined MCC+MNC
+  - Updated `defaults.xml` with MCC/MNC values
+  - Updated section 3.2 documentation
+  
+**Note:** Default values for IMEI, IMSI, MCC/MNC are configurable and remain as:
+- IMEI: "506066104722640"
+- IMSI: "452011234567890" 
+- Carrier Code: MCC "452" + MNC "01" = "45201"
 
 ### 8.4 Sensor Enhancements
 
@@ -510,24 +523,27 @@ The replacement files are copied from assets:
     - How to handle time-windowed variance detection?
   - Deliverable: Document findings and recommend if additional implementation needed
 
-### 8.5 Bluetooth Hooks
+### 8.5 Bluetooth Hooks ✅
 
-- [ ] **Create FakeBluetooth.java**
+- [x] **Create FakeBluetooth.java**
   - New file to mock disabled Bluetooth state
   - Hook targets:
-    - `BluetoothAdapter.getDefaultAdapter()` - Return fake adapter instance
+    - `BluetoothAdapter.getDefaultAdapter()` - Return null when disabled
     - `BluetoothAdapter.isEnabled()` - Return `false` (disabled)
     - `BluetoothAdapter.isDiscovering()` - Return `false` (not discovering)
     - `BluetoothAdapter.getState()` - Return `BluetoothAdapter.STATE_OFF` (10)
-    - `BluetoothAdapter.getName()` - Return SharedPref value or null
+    - `BluetoothAdapter.getName()` - Return "Pixel 6a" (from SharedPref)
     - `BluetoothAdapter.getAddress()` - Return null (unavailable when disabled)
-    - `BluetoothManager` via `getSystemService(Context.BLUETOOTH_SERVICE)` - Return fake manager
-  - Add SharedPref keys (for future expansion):
-    - `BluetoothName` - Device name (when "enabled")
-    - `BluetoothAddress` - MAC address
+    - `BluetoothManager.getAdapter()` - Return null when disabled
+    - `BluetoothManager.getConnectionState()` - Return STATE_DISCONNECTED (0)
+    - `BluetoothManager.getConnectedDevices()` - Return empty list
+  - Add SharedPref keys:
+    - `BluetoothName` - Device name: "Pixel 6a" (from real Pixel 6a device)
+    - `BluetoothAddress` - MAC address (empty by default)
     - `BluetoothEnabled` - "false" (default, matches disabled state)
   - Add defaults to `defaults.xml`
   - Add hook registration in `MainHook.java`
+  - Note: Real Pixel 6a returns BLE_ON even when Bluetooth is off, but we ignore this and return everything OFF as specified
 
 ### 8.6 Network Enhancements
 
