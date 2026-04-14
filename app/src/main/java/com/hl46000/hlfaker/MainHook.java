@@ -7,6 +7,7 @@ import com.hl46000.hlfaker.FakeBluetooth;
 import com.hl46000.hlfaker.FakeBuildInfo;
 import com.hl46000.hlfaker.FakeEmail;
 import com.hl46000.hlfaker.FakeHardwareInfo;
+import com.hl46000.hlfaker.FakeNetwork;
 import com.hl46000.hlfaker.FakeOpenGL;
 import com.hl46000.hlfaker.FakeRAM;
 import com.hl46000.hlfaker.RootCloak;
@@ -24,6 +25,7 @@ public class MainHook implements IXposedHookLoadPackage {
 		new FakeDebugFlags(sharePkgParam);
 		new FakeBattery().fakePinStt(sharePkgParam);
 		new FakeBluetooth(sharePkgParam);
+		new FakeNetwork(sharePkgParam);
 		new FakeHardwareInfo(sharePkgParam);
 		new FakeBuildInfo(sharePkgParam);
 		new FakeOpenGL().FakeDisplay(sharePkgParam);

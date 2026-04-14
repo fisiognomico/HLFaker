@@ -18,7 +18,8 @@ import com.hl46000.hlfaker.SharedPref;
  * Default values (from R.string resources):
  * - Temperature: 350 (35.0°C)
  * - Level: 35 (35%)
- * - Plugged: random(0-2)
+ * - Voltage: 4200 (mV, realistic fully charged voltage)
+ * - Plugged: 2 (USB charging, configurable)
  * - Status: random(2-4)
  * - Health: 2 (Good)
  */
@@ -28,6 +29,8 @@ public class FakeBattery {
     private static final String DEFAULT_TEMP = "350";
     private static final String DEFAULT_LEVEL = "35";
     private static final String DEFAULT_HEALTH = "2";
+    private static final String DEFAULT_VOLTAGE = "4200";
+    private static final String DEFAULT_PLUGGED = "2"; // USB charging
 
 	// Fake trang thai cua Pin
 	public void fakePinStt(LoadPackageParam loadPkgParam) {
@@ -52,13 +55,20 @@ public class FakeBattery {
                             param.setResult(Integer.valueOf(Integer.parseInt(levelValue)));
                         }
                         if (key.equals("plugged")) {
-                            param.setResult(Integer.valueOf(random02()));
+                            // Use SharedPref value for BatteryPlugged (0=unplugged, 2=USB)
+                            String pluggedValue = SharedPref.getXValue("BatteryPlugged", DEFAULT_PLUGGED);
+                            param.setResult(Integer.valueOf(Integer.parseInt(pluggedValue)));
                         }
                         if (key.equals("status")) {
                             param.setResult(Integer.valueOf(random24()));
                         }
                         if (key.equals("health")) {
                             param.setResult(Integer.valueOf(DEFAULT_HEALTH));
+                        }
+                        if (key.equals("voltage")) {
+                            // Use SharedPref value for BatteryVoltage
+                            String voltageValue = SharedPref.getXValue("BatteryVoltage", DEFAULT_VOLTAGE);
+                            param.setResult(Integer.valueOf(Integer.parseInt(voltageValue)));
                         }
 			        }
 				}

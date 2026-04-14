@@ -75,21 +75,31 @@
     <string name="default_bluetooth_mac" translatable="false">6C:C4:08:BB:B1:28</string>
     
     <!-- ============================================================ -->
-    <!-- 6. OpenGL Properties -->
+    <!-- 6. Network Properties (FakeNetwork.java) -->
+    <!-- ============================================================ -->
+    <string name="default_network_ip" translatable="false">192.168.1.100</string>
+    <string name="default_network_interface" translatable="false">wlan0</string>
+    <string name="default_network_mac_oui" translatable="false">6C:C4:08</string>
+    <string name="default_connectivity_type" translatable="false">WIFI</string>
+    
+    <!-- ============================================================ -->
+    <!-- 7. OpenGL Properties -->
     <!-- ============================================================ -->
     <string name="default_gl_vendor" translatable="false">Qualcomm</string>
     <string name="default_gl_renderer" translatable="false">Adreno (TM) 330</string>
     
     <!-- ============================================================ -->
-    <!-- 7. Display Properties -->
+    <!-- 8. Display Properties -->
     <!-- ============================================================ -->
     <string name="default_dpi" translatable="false">320</string>
     
     <!-- ============================================================ -->
-    <!-- 8. Battery Properties -->
+    <!-- 9. Battery Properties -->
     <!-- ============================================================ -->
     <string name="default_battery_temp" translatable="false">350</string>
     <string name="default_battery_level" translatable="false">35</string>
+    <string name="default_battery_voltage" translatable="false">4200</string>
+    <string name="default_battery_plugged" translatable="false">2</string>
     <string name="default_battery_plugged_min" translatable="false">0</string>
     <string name="default_battery_plugged_max" translatable="false">2</string>
     <string name="default_battery_status_min" translatable="false">2</string>
@@ -97,36 +107,36 @@
     <string name="default_battery_health" translatable="false">2</string>
     
     <!-- ============================================================ -->
-    <!-- 9. CPU Properties (Integer values) -->
+    <!-- 10. CPU Properties (Integer values) -->
     <!-- ============================================================ -->
     <string name="default_cpu_cores" translatable="false">4</string>
     <string name="default_cpu_max_freq" translatable="false">2</string>
     
     <!-- ============================================================ -->
-    <!-- 10. System/OS Properties -->
+    <!-- 11. System/OS Properties -->
     <!-- ============================================================ -->
     <string name="default_os_name" translatable="false">Linux</string>
     <string name="default_os_arch" translatable="false">armv7l</string>
     <string name="default_os_version" translatable="false">3.4.0-gd59db4e</string>
     
     <!-- ============================================================ -->
-    <!-- 11. Email Properties -->
+    <!-- 12. Email Properties -->
     <!-- ============================================================ -->
     <string name="default_email" translatable="false">hl.46000@gmail.com</string>
     <string name="default_fake_email_package" translatable="false">com.alibaba.aliexpresshd</string>
     
     <!-- ============================================================ -->
-    <!-- 12. Root Cloak Properties -->
+    <!-- 13. Root Cloak Properties -->
     <!-- ============================================================ -->
     <string name="default_hide_root_packages" translatable="false">com.alibaba.aliexpresshd</string>
     
     <!-- ============================================================ -->
-    <!-- 13. User Agent -->
+    <!-- 14. User Agent -->
     <!-- ============================================================ -->
     <string name="default_user_agent" translatable="false">Mozilla/5.0 (Linux; Android 4.4.2; GT-I9505 Build/16.0.A.0.36) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/51.0.2704 Mobile Safari/537.36</string>
     
     <!-- ============================================================ -->
-    <!-- 14. Sensor Properties (Hardcoded in FakeOpenGL.java) -->
+    <!-- 15. Sensor Properties (Hardcoded in FakeOpenGL.java) -->
     <!-- ============================================================ -->
     <string name="default_sensor_vendor_bosch" translatable="false">BOSCH</string>
     <string name="default_sensor_vendor_avago" translatable="false">AVAGO</string>
@@ -137,10 +147,10 @@
     <string name="default_sensor_gravity" translatable="false">Gravity</string>
     <string name="default_sensor_linear_accel" translatable="false">Linear Acceleration</string>
     <string name="default_sensor_orientation" translatable="false">Orientation</string>
-    <string name="default_sensor_corrected_gyro" translatable="false">APDS-9930/QPDS-T930 Proximity \u0026 Light||QTI@@Step Detector||QTI@@Gravity||QTI@@Linear Acceleration||QTI@@Rotation Vector||QTI@@Step Detector||QTI@@Step Counter||QTI@@Significant Motion Detector||QTI@@Game Rotation Vector||QTI@@GeoMagnetic Rotation Vector||QTI@@Orientation||QTI@@Tilt Detector</string>
+    <string name="default_sensor_corrected_gyro" translatable="false">APDS-9930/QPDS-T930 Proximity & Light||QTI@@Step Detector||QTI@@Gravity||QTI@@Linear Acceleration||QTI@@Rotation Vector||QTI@@Step Detector||QTI@@Step Counter||QTI@@Significant Motion Detector||QTI@@Game Rotation Vector||QTI@@GeoMagnetic Rotation Vector||QTI@@Orientation||QTI@@Tilt Detector</string>
     
     <!-- ============================================================ -->
-    <!-- 15. RAM Properties (Random values) -->
+    <!-- 16. RAM Properties (Random values) -->
     <!-- ============================================================ -->
     <array name="default_ram_values">
         <item>1024</item>
@@ -150,7 +160,7 @@
     </array>
     
     <!-- ============================================================ -->
-    <!-- 16. System Properties (Emulator Detection Bypass) -->
+    <!-- 17. System Properties (Emulator Detection Bypass) -->
     <!-- ============================================================ -->
     <string name="default_qemu_mode" translatable="false">0</string>
     <string name="default_build_characteristics" translatable="false">default</string>
@@ -160,7 +170,7 @@
     <string name="default_init_svc_qemu" translatable="false"></string>
     
     <!-- ============================================================ -->
-    <!-- 17. Bluetooth Properties -->
+    <!-- 18. Bluetooth Properties -->
     <!-- ============================================================ -->
     <string name="default_bluetooth_name" translatable="false">Pixel 6a</string>
     <string name="default_bluetooth_address" translatable="false"></string>

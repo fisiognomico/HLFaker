@@ -205,14 +205,18 @@ The project now uses Gradle build system (migrated from Eclipse/ANT).
 | Speed | Speed | 3.7 | GPS speed |
 | Accuracy | Alt | 125.06 | Location accuracy |
 
-### 3.5 WiFi Properties (FakeHardwareInfo.java)
+### 3.5 WiFi & Network Properties (FakeHardwareInfo.java, FakeNetwork.java)
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
 | WiFi MAC | WifiMAC | 6C:C4:08:BB:B1:28 | MAC address |
-| WiFi SSID | WifiName | MyWifi | Network name |
-| BSSID | BSSID | 6C:C4:08:BB:B1:28 | Access point BSSID |
+| WiFi SSID | WifiName / WifiSSID | MyWifi | Network name |
+| BSSID | BSSID / WifiBSSID | 6C:C4:08:BB:B1:28 | Access point BSSID |
 | Bluetooth MAC | WifiMAC | 6C:C4:08:BB:B1:28 | Bluetooth address (same as WiFi) |
+| **Network IP** | NetworkIP | 192.168.1.100 | Device IP (avoid 10.0.2.15) |
+| **Network Interface** | NetworkInterface | wlan0 | Interface name (avoid eth0) |
+| **MAC OUI Prefix** | NetworkMacOUI | 6C:C4:08 | MAC prefix (avoid 52:54:00 QEMU) |
+| **Connectivity Type** | ConnectivityType | WIFI | TYPE_WIFI (1) or TYPE_ETHERNET (9) |
 
 ### 3.6 Bluetooth Properties (FakeBluetooth.java)
 
@@ -241,11 +245,14 @@ The project now uses Gradle build system (migrated from Eclipse/ANT).
 
 | Property | SharedPref Key | Default Value | Description |
 |----------|----------------|---------------|-------------|
-| Temperature | Temp | 350 | Battery temperature |
+| Temperature | Temp | 350 | Battery temperature (35.0°C) |
 | Level | Level | 35 | Battery percentage |
-| Plugged | - | random(0-2) | Charging state |
+| **Voltage** | BatteryVoltage | 4200 | Battery voltage in mV |
+| **Plugged** | BatteryPlugged | 2 | Charging state: 0=unplugged, 2=USB |
 | Status | - | random(2-4) | Battery status |
 | Health | - | 2 | Battery health |
+
+**Note:** BatteryPlugged value of 2 (USB) ensures consistency with sys.usb.config and sys.usb.state properties.
 
 ### 3.10 CPU Properties (FakeCPU.java)
 
@@ -406,12 +413,6 @@ The replacement files are copied from assets:
 6. ✅ Added lint options for build
 7. ✅ Created build.sh deployment script
 
-### ⏳ Remaining (Medium/Low Priority)
-- Testing on actual Android devices
-- Create README.md documentation
-- Code quality improvements
-- Security enhancements
-
 ---
 
 ## 7. Resources
@@ -515,14 +516,6 @@ The replacement files are copied from assets:
     - Make jitter magnitude configurable via SharedPref: `SensorJitterMagnitude`
   - Add to `defaults.xml`: `SensorJitterMagnitude` = "0.05"
 
-- [ ] **Research advanced SENSOR_VARIANCE mitigation approaches**
-  - Some apps may use statistical analysis (standard deviation, variance calculation)
-  - Research topics:
-    - Can we hook `Statistical analysis classes` (Apache Commons Math)?
-    - Can we intercept variance calculation methods directly?
-    - How to handle time-windowed variance detection?
-  - Deliverable: Document findings and recommend if additional implementation needed
-
 ### 8.5 Bluetooth Hooks ✅
 
 - [x] **Create FakeBluetooth.java**
@@ -545,10 +538,10 @@ The replacement files are copied from assets:
   - Add hook registration in `MainHook.java`
   - Note: Real Pixel 6a returns BLE_ON even when Bluetooth is off, but we ignore this and return everything OFF as specified
 
-### 8.6 Network Enhancements
+### 8.6 Network Enhancements ✅
 
-- [ ] **Make all network parameters configurable**
-  - File: `FakeHardwareInfo.java` (or create `FakeNetwork.java`)
+- [x] **Create FakeNetwork.java**
+  - New file for network-related hooks
   - Add SharedPref keys:
     | Key | Default Value | Description |
     |-----|---------------|-------------|
@@ -559,33 +552,32 @@ The replacement files are copied from assets:
     | `WifiSSID` | "MyWifi" | Network SSID |
     | `WifiBSSID` | "6C:C4:08:BB:B1:28" | Access point MAC |
   - Hook methods:
-    - `WifiInfo.getIpAddress()` - Return configured IP
-    - `NetworkInterface.getByName()` - Return fake interface
-    - `NetworkInterface.getName()` - Return configured name
+    - `WifiInfo.getIpAddress()` - Return configured IP as little-endian int
     - `WifiInfo.getSSID()` / `getBSSID()` - Return configured values
-    - `ConnectivityManager.getActiveNetworkInfo()` - Return type based on ConnectivityType
-  - Update `defaults.xml`
-  - Update section 3.5 documentation
+    - `NetworkInterface.getByName()` - Redirect eth0 to wlan0
+    - `NetworkInterface.getName()` - Return configured name
+    - `NetworkInterface.getHardwareAddress()` - Return MAC bytes from OUI
+    - `ConnectivityManager.getActiveNetworkInfo()` - Set network type
+  - Add defaults to `defaults.xml`
+  - Add hook registration in `MainHook.java`
 
-### 8.7 Battery Enhancements
+### 8.7 Battery Enhancements ✅
 
-- [ ] **Make BAT_VOLTAGE configurable**
+- [x] **Make BAT_VOLTAGE configurable**
   - File: `FakeBattery.java`
   - Add SharedPref key: `BatteryVoltage`
   - Default value: "4200" (mV, realistic fully charged voltage)
-  - Hook `BatteryManager.EXTRA_VOLTAGE` intent extra
+  - Hook `BatteryManager.EXTRA_VOLTAGE` intent extra ("voltage" key)
   - Update `defaults.xml`
-  - Update section 3.8 documentation
 
-- [ ] **Make BAT_PLUGGED configurable (USB only)**
+- [x] **Make BAT_PLUGGED configurable (USB only)**
   - File: `FakeBattery.java`, `FakeSystemProperties.java`
   - Add SharedPref key: `BatteryPlugged`
   - Supported values: 0=unplugged, 2=USB
-  - For now, only USB charging mode (value 2)
-  - Ensure consistency:
-    - `BatteryManager.EXTRA_PLUGGED` - Returns configured value
-    - `sys.usb.config` - Returns "mtp,adb" when plugged, "" when unplugged
-    - `sys.usb.state` - Same as sys.usb.config
+  - Implementation:
+    - `BatteryManager.EXTRA_PLUGGED` - Returns configured value from SharedPref
+    - `sys.usb.config` - Returns "mtp,adb" when plugged, "" when unplugged (already in FakeSystemProperties)
+    - `sys.usb.state` - Same as sys.usb.config (already in FakeSystemProperties)
   - Update `defaults.xml`: `BatteryPlugged` = "2" (USB)
 
 ### 8.8 Debug & ADB Hooks
