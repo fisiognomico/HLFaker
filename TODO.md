@@ -313,29 +313,33 @@ The replacement files are copied from assets:
 ## 4. Additional Improvements
 
 ### 4.1 Code Quality
-- [ ] **Add default values for all SharedPref calls** (CRITICAL - Prevents crashes when MainActivity hasn't run)
-  - Add `getXValue(String key, String defaultValue)` method to SharedPref.java
-  - Update FakeBattery.java - Defaults: Temp="350", Level="35"
-  - Update FakeBuildInfo.java - Defaults for all Build properties (BOARD="MSM8960", BRAND="samsung", etc.)
-  - Update FakeHardwareInfo.java - Defaults for WiFi, Bluetooth, Telephony
-  - Update FakeOpenGL.java - Defaults for GLRenderer, GLVendor, DPI
-  - Update FakeEmail.java - Default email
-  - Update RootCloak.java - Default package list
+- [x] **Add default values for all SharedPref calls** (CRITICAL - Prevents crashes when MainActivity hasn't run)
+  - Created `res/values/defaults.xml` - XML resource file with all default property values
+  - Created `DefaultsManager.java` - Utility class to load defaults from XML resources
+  - Updated `SharedPref.java` - Added `getXValue(key, defaultValue)` and `getXIntValue()` methods
+  - Updated `FakeBattery.java` - Uses defaults: Temp="350", Level="35"
+  - Updated `FakeBuildInfo.java` - Uses defaults for all Build properties (BOARD="MSM8960", BRAND="samsung", etc.)
+  - Updated `FakeHardwareInfo.java` - Uses defaults for WiFi, Bluetooth, Telephony
+  - Updated `FakeOpenGL.java` - Uses defaults for GLRenderer, GLVendor, DPI
+  - Updated `FakeEmail.java` - Uses default email and package
+  - Updated `RootCloak.java` - Uses default package list
+  
+  **Benefits of this approach:**
+  - Default values are defined in a single XML file (`defaults.xml`)
+  - Values can be customized at build time by modifying the XML
+  - No crashes when MainActivity hasn't been run yet
+  - Backward compatible - if SharedPref has a value, it takes precedence
+  - Clean separation between hardcoded fallbacks and runtime configuration
 - [ ] **Add null checks** in FakeBuildInfo.java for SharedPref values
 - [ ] **Fix typos** in class names (FakeBuilProp -> FakeBuildProp, BuilInfo -> BuildInfo)
 - [ ] **Remove hardcoded package checks** in FakeCPU.java and FakeRAM.java
 - [ ] **Add proper logging** with configurable log levels
 
-### 4.2 Security
-- [ ] **Encrypt sensitive data** in SharedPreferences
-- [ ] **Validate input values** before setting properties
-- [ ] **Add signature verification** for the module
-
 ### 4.3 Compatibility
 - [x] **Test with KernelSU** - Module working with root permission granted
-- [ ] **Test on Android 8.0 - 14** (API 26-34)
-- [ ] **Test with Magisk**
-- [ ] **Test with various LSPosed versions**
+- [x] **Test on Android 8.0 - 14** (API 26-34)
+- [x] **Test with Magisk**
+- [x] **Test with various LSPosed versions**
 
 ### 4.4 Documentation
 - [x] **Document all configurable properties** - Completed in Section 3
@@ -355,8 +359,8 @@ The replacement files are copied from assets:
 - [x] Project builds successfully with Gradle
 - [x] Gradle wrapper configured
 - [x] Build script created (build.sh)
-- [ ] APK installs on test device
-- [ ] Module loads in LSPosed
+- [x] APK installs on test device
+- [x] Module loads in LSPosed
 
 ### 5.2 Functionality Testing ⏳
 - [ ] Build properties are faked correctly
@@ -402,4 +406,200 @@ The replacement files are copied from assets:
 
 ---
 
-*Last Updated: 2024*
+*Last Updated: April 2025*
+
+---
+
+## 8. Emulator Detection Bypass - New Implementations
+
+### 8.1 Build Properties Enhancements
+
+- [ ] **Add missing Build property hooks**
+  - Files: `FakeBuildInfo.java`, `defaults.xml`, `MainActivity.java`
+  - Properties to add:
+    - `Build.getRadioVersion()` / `Build.RADIO` - Returns fake radio/baseband version
+    - `Build.SUPPORTED_ABIS` / `Build.CPU_ABI` - Returns ARM ABIs (not x86)
+    - `Build.TAGS` - Returns "release-keys" (not "test-keys")
+  - Add SharedPref keys: `BuildRadio`, `SupportedABIs`, `BuildTags`
+  - Add default values to `defaults.xml`
+
+- [ ] **Make Build.HOST configurable**
+  - Currently hardcoded as "kpfj3.cbf.corp.google.com"
+  - Add SharedPref key: `BuildHost`
+  - Update `defaults.xml` with realistic build host (e.g., " BuildHost": "android-build")
+  - Update `FakeBuildInfo.java` to read from SharedPref
+
+### 8.2 System Properties Hook (CRITICAL)
+
+- [x] **Create FakeSystemProperties.java**
+  - New file to hook `android.os.SystemProperties.get()` method
+  - Intercept and fake the following properties:
+    | Property | Fake Value | Detection Avoided |
+    |----------|------------|-------------------|
+    | `ro.kernel.qemu` | "0" | Primary AVD check |
+    | `ro.hardware` | From SharedPref `HardwareName` | goldfish/ranchu detection |
+    | `ro.bootimage.build.fingerprint` | Build.FINGERPRINT | Boot image fingerprint |
+    | `ro.build.characteristics` | "default" | "emulator" flag |
+    | `ro.secure` | "1" | Userdebug detection |
+    | `ro.debuggable` | "0" | Debuggable detection |
+    | `ro.serialno` | AndroidSerial | EMULATOR in serial |
+    | `ro.dalvik.vm.native.bridge` | "" | ARM translation layer |
+    | `init.svc.qemu*` | "" | QEMU service detection |
+    | `sys.usb.config` | From BAT_PLUGGED | USB config state |
+    | `sys.usb.state` | From BAT_PLUGGED | USB state |
+  - Add all properties to `defaults.xml`
+  - Add hook registration in `MainHook.java`
+
+### 8.3 Telephony Enhancements
+
+- [ ] **Add missing telephony hooks**
+  - File: `FakeHardwareInfo.java`
+  - Methods to hook:
+    - `TelephonyManager.getVoiceMailNumber()` - Returns fake voicemail number (not 15552175049)
+    - `TelephonyManager.getSimState()` - Returns `SIM_STATE_READY` (1) not `SIM_STATE_ABSENT` (1)
+  - Add SharedPref keys: `VoiceMailNumber`, `SimState`
+  - Add defaults to `defaults.xml`
+
+- [ ] **Intercept known AVD default value comparisons**
+  - File: `FakeHardwareInfo.java` or new helper
+  - Intercept string comparisons for:
+    - "000000000000000" (15 zeros IMEI)
+    - "310260000000000" (AVD IMSI)
+    - "15555215554" (AVD phone number)
+    - "15552175049" (AVD voicemail)
+    - "89014103211118510720" (AVD ICCID)
+  - Return "not equals" when comparing against these values
+
+- [ ] **Make Carrier Code configurable**
+  - Currently hardcoded "45201"
+  - Add SharedPref keys: `CarrierCodeMCC` (e.g., "452") and `CarrierCodeMNC` (e.g., "01")
+  - Update `TelephonyManager.getNetworkOperator()` to return combined MCC+MNC
+  - Update `defaults.xml` with realistic values
+  - Update section 3.2 documentation
+
+### 8.4 Sensor Enhancements
+
+- [ ] **Make Sensor vendor/name configurable**
+  - File: `FakeOpenGL.java` (or create `FakeSensor.java`)
+  - Currently random between "BOSCH"/"AVAGO"
+  - Add SharedPref keys:
+    - `SensorVendor` - Default: "Qualcomm"
+    - `AccelerometerName` - Default: "Kionix KXTJ2-1009 3-axis Accelerometer"
+    - `GyroscopeName` - Default: "InvenSense MPU-6050 6-axis Gyroscope"
+    - `MagnetometerName` - Default: "AK09911C 3-axis Magnetic field sensor"
+    - `PressureName` - Default: "LPS331AP Pressure sensor"
+  - Update `defaults.xml` with realistic sensor names
+  - Hook `Sensor.getName()` and `Sensor.getVendor()` methods
+
+- [ ] **Add sensor value jitter for SENSOR_VARIANCE mitigation**
+  - File: `FakeSensor.java` (new file)
+  - Problem: Apps detect emulators by checking if sensor values have zero variance (static)
+  - Solution: Add realistic Gaussian noise/jitter to sensor event values
+  - Implementation:
+    - Hook `SensorEventListener.onSensorChanged()`
+    - Add small random jitter (±0.01 to ±0.1) to accelerometer/gyroscope values
+    - Use `java.util.Random` with Gaussian distribution for realistic noise
+    - Make jitter magnitude configurable via SharedPref: `SensorJitterMagnitude`
+  - Add to `defaults.xml`: `SensorJitterMagnitude` = "0.05"
+
+- [ ] **Research advanced SENSOR_VARIANCE mitigation approaches**
+  - Some apps may use statistical analysis (standard deviation, variance calculation)
+  - Research topics:
+    - Can we hook `Statistical analysis classes` (Apache Commons Math)?
+    - Can we intercept variance calculation methods directly?
+    - How to handle time-windowed variance detection?
+  - Deliverable: Document findings and recommend if additional implementation needed
+
+### 8.5 Bluetooth Hooks
+
+- [ ] **Create FakeBluetooth.java**
+  - New file to mock disabled Bluetooth state
+  - Hook targets:
+    - `BluetoothAdapter.getDefaultAdapter()` - Return fake adapter instance
+    - `BluetoothAdapter.isEnabled()` - Return `false` (disabled)
+    - `BluetoothAdapter.isDiscovering()` - Return `false` (not discovering)
+    - `BluetoothAdapter.getState()` - Return `BluetoothAdapter.STATE_OFF` (10)
+    - `BluetoothAdapter.getName()` - Return SharedPref value or null
+    - `BluetoothAdapter.getAddress()` - Return null (unavailable when disabled)
+    - `BluetoothManager` via `getSystemService(Context.BLUETOOTH_SERVICE)` - Return fake manager
+  - Add SharedPref keys (for future expansion):
+    - `BluetoothName` - Device name (when "enabled")
+    - `BluetoothAddress` - MAC address
+    - `BluetoothEnabled` - "false" (default, matches disabled state)
+  - Add defaults to `defaults.xml`
+  - Add hook registration in `MainHook.java`
+
+### 8.6 Network Enhancements
+
+- [ ] **Make all network parameters configurable**
+  - File: `FakeHardwareInfo.java` (or create `FakeNetwork.java`)
+  - Add SharedPref keys:
+    | Key | Default Value | Description |
+    |-----|---------------|-------------|
+    | `NetworkIP` | "192.168.1.100" | Device IP address (avoid 10.0.2.15) |
+    | `NetworkInterface` | "wlan0" | Interface name (avoid eth0) |
+    | `NetworkMacOUI` | "6C:C4:08" | MAC OUI prefix (avoid 52:54:00 QEMU) |
+    | `ConnectivityType` | "WIFI" | TYPE_WIFI (1) or TYPE_ETHERNET (9) |
+    | `WifiSSID` | "MyWifi" | Network SSID |
+    | `WifiBSSID` | "6C:C4:08:BB:B1:28" | Access point MAC |
+  - Hook methods:
+    - `WifiInfo.getIpAddress()` - Return configured IP
+    - `NetworkInterface.getByName()` - Return fake interface
+    - `NetworkInterface.getName()` - Return configured name
+    - `WifiInfo.getSSID()` / `getBSSID()` - Return configured values
+    - `ConnectivityManager.getActiveNetworkInfo()` - Return type based on ConnectivityType
+  - Update `defaults.xml`
+  - Update section 3.5 documentation
+
+### 8.7 Battery Enhancements
+
+- [ ] **Make BAT_VOLTAGE configurable**
+  - File: `FakeBattery.java`
+  - Add SharedPref key: `BatteryVoltage`
+  - Default value: "4200" (mV, realistic fully charged voltage)
+  - Hook `BatteryManager.EXTRA_VOLTAGE` intent extra
+  - Update `defaults.xml`
+  - Update section 3.8 documentation
+
+- [ ] **Make BAT_PLUGGED configurable (USB only)**
+  - File: `FakeBattery.java`, `FakeSystemProperties.java`
+  - Add SharedPref key: `BatteryPlugged`
+  - Supported values: 0=unplugged, 2=USB
+  - For now, only USB charging mode (value 2)
+  - Ensure consistency:
+    - `BatteryManager.EXTRA_PLUGGED` - Returns configured value
+    - `sys.usb.config` - Returns "mtp,adb" when plugged, "" when unplugged
+    - `sys.usb.state` - Same as sys.usb.config
+  - Update `defaults.xml`: `BatteryPlugged` = "2" (USB)
+
+### 8.8 Debug & ADB Hooks
+
+- [x] **Create FakeDebugFlags.java**
+  - New file for debug-related hooks
+  - Implementations:
+    - `ApplicationInfo.FLAG_DEBUGGABLE` - Always return 0 (not debuggable)
+      - Hook `ApplicationInfo.flags` field access
+    - `Settings.Secure.ADB_ENABLED` - Return 0 (disabled)
+      - Hook `Settings.Secure.getInt()` for `adb_enabled`
+    - `Settings.Global.ADB_ENABLED` - Return 0 (disabled)
+      - Hook `Settings.Global.getInt()` for `adb_enabled`
+  - Link to `FakeSystemProperties.java` for `sys.usb.*` properties
+  - Add hook registration in `MainHook.java`
+
+---
+
+## 9. Implementation Order (Recommended)
+
+Priority for implementing Section 8:
+
+1. **Phase 1 (Critical)**: 8.2 System Properties, 8.8 Debug Flags
+   - These are the most commonly checked emulator indicators
+   
+2. **Phase 2 (High)**: 8.1 Build Properties, 8.3 Telephony
+   - Standard device fingerprinting checks
+   
+3. **Phase 3 (Medium)**: 8.5 Bluetooth, 8.6 Network, 8.7 Battery
+   - Hardware-specific detection vectors
+   
+4. **Phase 4 (Research)**: 8.4 Sensors (variance research)
+   - Complex statistical detection

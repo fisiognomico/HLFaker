@@ -10,6 +10,8 @@ import com.hl46000.hlfaker.FakeOpenGL;
 import com.hl46000.hlfaker.FakeRAM;
 import com.hl46000.hlfaker.RootCloak;
 import com.hl46000.hlfaker.FakeCPU;
+import com.hl46000.hlfaker.FakeDebugFlags;
+import com.hl46000.hlfaker.FakeSystemProperties;
 
 public class MainHook implements IXposedHookLoadPackage {
 
@@ -17,6 +19,8 @@ public class MainHook implements IXposedHookLoadPackage {
 	@Override
 	public void handleLoadPackage(LoadPackageParam sharePkgParam) throws Throwable {
 		// TODO Auto-generated method stub
+		new FakeSystemProperties(sharePkgParam);
+		new FakeDebugFlags(sharePkgParam);
 		new FakeBattery().fakePinStt(sharePkgParam);
 		new FakeHardwareInfo(sharePkgParam);
 		new FakeBuildInfo(sharePkgParam);

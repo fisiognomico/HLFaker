@@ -141,4 +141,14 @@
         <item>3027</item>
         <item>4096</item>
     </array>
+    
+    <!-- ============================================================ -->
+    <!-- 16. System Properties (Emulator Detection Bypass) -->
+    <!-- ============================================================ -->
+    <string name="default_qemu_mode" translatable="false">0</string>
+    <string name="default_build_characteristics" translatable="false">default</string>
+    <string name="default_secure_mode" translatable="false">1</string>
+    <string name="default_debuggable" translatable="false">0</string>
+    <string name="default_native_bridge" translatable="false"></string>
+    <string name="default_init_svc_qemu" translatable="false"></string>
 </resources>
