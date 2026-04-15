@@ -59,17 +59,17 @@ public class FakeDebugFlags {
             });
             
             // Hook flags field access for Build class (some detection code checks Build flags)
-            if (loadPkgParam.packageName.equals("android")) {
-                // Only hook at system level if needed
-                XposedHelpers.findAndHookMethod("android.content.pm.PackageParser", 
-                        loadPkgParam.classLoader, "parseApplication", 
+            // PackageParser was removed in Android 13 (API 33) — guard accordingly
+            if (loadPkgParam.packageName.equals("android") && android.os.Build.VERSION.SDK_INT < 33) {
+                XposedHelpers.findAndHookMethod("android.content.pm.PackageParser",
+                        loadPkgParam.classLoader, "parseApplication",
                         XposedHelpers.findClass("android.content.pm.PackageParser$Package", loadPkgParam.classLoader),
-                        android.content.res.Resources.class, 
+                        android.content.res.Resources.class,
                         org.xmlpull.v1.XmlPullParser.class,
                         android.util.AttributeSet.class,
                         int.class,
                         new XC_MethodHook() {
-                    
+
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         ApplicationInfo appInfo = (ApplicationInfo) param.getResult();
@@ -79,9 +79,9 @@ public class FakeDebugFlags {
                     }
                 });
             }
-            
-        } catch (Exception e) {
-            XposedBridge.log("FakeDebugFlags ApplicationInfo ERROR: " + e.getMessage());
+
+        } catch (Throwable t) {
+            XposedBridge.log("FakeDebugFlags ApplicationInfo ERROR: " + t);
         }
     }
     
@@ -146,8 +146,8 @@ public class FakeDebugFlags {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeDebugFlags Settings.Secure ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeDebugFlags Settings.Secure ERROR: " + t);
         }
     }
     
@@ -223,8 +223,8 @@ public class FakeDebugFlags {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeDebugFlags Settings.Global ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeDebugFlags Settings.Global ERROR: " + t);
         }
     }
 }

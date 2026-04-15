@@ -97,8 +97,8 @@ public class FakeSystemProperties {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeSystemProperties ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeSystemProperties ERROR: " + t);
         }
     }
     

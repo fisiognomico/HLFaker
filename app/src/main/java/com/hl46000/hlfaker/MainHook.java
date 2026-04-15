@@ -1,6 +1,7 @@
 package com.hl46000.hlfaker;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import com.hl46000.hlfaker.FakeBattery;
 import com.hl46000.hlfaker.FakeBluetooth;
@@ -18,25 +19,31 @@ import com.hl46000.hlfaker.FakeSystemProperties;
 
 public class MainHook implements IXposedHookLoadPackage {
 
-
 	@Override
-	public void handleLoadPackage(LoadPackageParam sharePkgParam) throws Throwable {
-		// TODO Auto-generated method stub
-		new FakeSystemProperties(sharePkgParam);
-		new FakeDebugFlags(sharePkgParam);
-		new FakeBattery().fakePinStt(sharePkgParam);
-		new FakeBluetooth(sharePkgParam);
-		new FakeNetwork(sharePkgParam);
-		new FakeHardwareInfo(sharePkgParam);
-		new FakeBuildInfo(sharePkgParam);
-		new FakeOpenGL().FakeDisplay(sharePkgParam);
-		new FakeSensor(sharePkgParam);
-		new FakeEmail().fakeGmail(sharePkgParam);
-		new RootCloak().handleLoadPackage(sharePkgParam);
-		new FakeCPU(sharePkgParam);	
-		new FakeRAM(sharePkgParam);
-		
+	public void handleLoadPackage(final LoadPackageParam sharePkgParam) throws Throwable {
+		XposedBridge.log("HLFaker: loading for " + sharePkgParam.packageName);
+		tryHook("FakeSystemProperties", () -> new FakeSystemProperties(sharePkgParam));
+		tryHook("FakeDebugFlags",       () -> new FakeDebugFlags(sharePkgParam));
+		tryHook("FakeBattery",          () -> new FakeBattery().fakePinStt(sharePkgParam));
+		tryHook("FakeBluetooth",        () -> new FakeBluetooth(sharePkgParam));
+		tryHook("FakeNetwork",          () -> new FakeNetwork(sharePkgParam));
+		tryHook("FakeHardwareInfo",     () -> new FakeHardwareInfo(sharePkgParam));
+		tryHook("FakeBuildInfo",        () -> new FakeBuildInfo(sharePkgParam));
+		tryHook("FakeOpenGL",           () -> new FakeOpenGL().FakeDisplay(sharePkgParam));
+		tryHook("FakeSensor",           () -> new FakeSensor(sharePkgParam));
+		tryHook("FakeEmail",            () -> new FakeEmail().fakeGmail(sharePkgParam));
+		tryHook("RootCloak",            () -> new RootCloak().handleLoadPackage(sharePkgParam));
+		tryHook("FakeCPU",              () -> new FakeCPU(sharePkgParam));
+		tryHook("FakeRAM",              () -> new FakeRAM(sharePkgParam));
 	}
 
+	private void tryHook(String name, Runnable r) {
+		try {
+			r.run();
+			XposedBridge.log("HLFaker: " + name + " OK");
+		} catch (Throwable t) {
+			XposedBridge.log("HLFaker: " + name + " FAILED: " + t);
+		}
+	}
 
 }

@@ -97,8 +97,8 @@ public class FakeNetwork {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeNetwork WifiInfo ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeNetwork WifiInfo ERROR: " + t);
         }
     }
     
@@ -145,8 +145,8 @@ public class FakeNetwork {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeNetwork NetworkInterface ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeNetwork NetworkInterface ERROR: " + t);
         }
     }
     
@@ -177,8 +177,8 @@ public class FakeNetwork {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeNetwork ConnectivityManager ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeNetwork ConnectivityManager ERROR: " + t);
         }
     }
     
@@ -196,8 +196,8 @@ public class FakeNetwork {
                 // Android uses little-endian: d.c.b.a
                 return (d << 24) | (c << 16) | (b << 8) | a;
             }
-        } catch (Exception e) {
-            XposedBridge.log("FakeNetwork ipToInt ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeNetwork ipToInt ERROR: " + t);
         }
         // Default: 192.168.1.100
         return (100 << 24) | (1 << 16) | (168 << 8) | 192;
@@ -214,7 +214,7 @@ public class FakeNetwork {
                 bytes[i] = (byte) Integer.parseInt(hex[i], 16);
             }
             return bytes;
-        } catch (Exception e) {
+        } catch (Throwable t) {
             // Return default MAC bytes for 6C:C4:08:BB:B1:28
             return new byte[] { (byte) 0x6C, (byte) 0xC4, (byte) 0x08, (byte) 0xBB, (byte) 0xB1, (byte) 0x28 };
         }

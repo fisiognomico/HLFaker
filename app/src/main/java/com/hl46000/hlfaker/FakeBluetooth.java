@@ -114,8 +114,8 @@ public class FakeBluetooth {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeBluetooth Adapter ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeBluetooth Adapter ERROR: " + t);
         }
     }
     
@@ -158,8 +158,8 @@ public class FakeBluetooth {
                 }
             });
             
-        } catch (Exception e) {
-            XposedBridge.log("FakeBluetooth Manager ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeBluetooth Manager ERROR: " + t);
         }
     }
 }

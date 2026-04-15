@@ -99,8 +99,8 @@ public class FakeSensor {
                     param.setResult(vendor);
                 }
             });
-        } catch (Exception e) {
-            XposedBridge.log("FakeSensor getVendor ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeSensor getVendor ERROR: " + t);
         }
     }
     
@@ -121,8 +121,8 @@ public class FakeSensor {
                     }
                 }
             });
-        } catch (Exception e) {
-            XposedBridge.log("FakeSensor getName ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeSensor getName ERROR: " + t);
         }
     }
     
@@ -193,8 +193,8 @@ public class FakeSensor {
                     applyJitterToValues(type, values);
                 }
             });
-        } catch (Exception e) {
-            XposedBridge.log("FakeSensor onSensorChanged ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeSensor onSensorChanged ERROR: " + t);
         }
         
         // Alternative hook: Some apps use the SensorEvent directly from system sensor service
@@ -215,8 +215,8 @@ public class FakeSensor {
                     applyJitterToValues(type, values);
                 }
             });
-        } catch (Exception e) {
-            XposedBridge.log("FakeSensor dispatchSensorEvent ERROR: " + e.getMessage());
+        } catch (Throwable t) {
+            XposedBridge.log("FakeSensor dispatchSensorEvent ERROR: " + t);
         }
     }
     
