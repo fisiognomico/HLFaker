@@ -37,7 +37,11 @@ public class MainHook implements IXposedHookLoadPackage {
 		tryHook("FakeRAM",              () -> new FakeRAM(sharePkgParam));
 	}
 
-	private void tryHook(String name, Runnable r) {
+	private interface ThrowingRunnable {
+		void run() throws Throwable;
+	}
+
+	private void tryHook(String name, ThrowingRunnable r) {
 		try {
 			r.run();
 			XposedBridge.log("HLFaker: " + name + " OK");

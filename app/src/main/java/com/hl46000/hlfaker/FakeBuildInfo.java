@@ -140,7 +140,7 @@ public class FakeBuildInfo {
 			    	
 				});
                 
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				XposedBridge.log("Fake User Agent ERROR: " + e.getMessage());
 			}
 		//}
@@ -212,7 +212,7 @@ public class FakeBuildInfo {
 			
 			
 			
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			XposedBridge.log("Fake GPS ERROR: " + e.getMessage());
 		}
 	}
@@ -231,7 +231,7 @@ public class FakeBuildInfo {
 				}				
 			});
 			
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			XposedBridge.log("Fake Android ID ERROR: " + ex.getMessage());
 		}
 	}
@@ -293,17 +293,27 @@ public class FakeBuildInfo {
 	}
 	
 	public void FakeIMEI(LoadPackageParam loadPkgParam){
+		String imei = SharedPref.getXValue("IMEI", DEFAULT_IMEI);
 		try {
-			String imei = SharedPref.getXValue("IMEI", DEFAULT_IMEI);
 			XposedHelpers.findAndHookMethod("android.telephony.TelephonyManager", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
-			XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneSubInfo", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
-			
-			if(VERSION.SDK_INT < 22){
+		} catch (Throwable t) {
+			XposedBridge.log("Fake IMEI TelephonyManager ERROR: " + t);
+		}
+		// PhoneSubInfo and legacy classes removed in API 23+ — skip on modern Android
+		if (VERSION.SDK_INT < 23) {
+			try {
+				XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneSubInfo", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
+			} catch (Throwable t) {
+				XposedBridge.log("Fake IMEI PhoneSubInfo ERROR: " + t);
+			}
+		}
+		if (VERSION.SDK_INT < 22) {
+			try {
 				XposedHelpers.findAndHookMethod("com.android.internal.telephony.gsm.GSMPhone", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
 				XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneProxy", loadPkgParam.classLoader, "getDeviceId", XC_MethodReplacement.returnConstant(imei));
-			}		
-		} catch (Exception ex) {
-			XposedBridge.log("Fake IMEI ERROR: " + ex.getMessage());
+			} catch (Throwable t) {
+				XposedBridge.log("Fake IMEI legacy ERROR: " + t);
+			}
 		}
 	}
 	
@@ -347,7 +357,7 @@ public class FakeBuildInfo {
 				
 			});
 			
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			XposedBridge.log("Fake Google Ads ID ERROR: " + ex.getMessage());
 		}
 	}
@@ -370,7 +380,7 @@ public class FakeBuildInfo {
 
 						});
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			XposedBridge.log("Fake BaseBand ERROR: " + e.getMessage());
 		}
 		
@@ -397,7 +407,7 @@ public class FakeBuildInfo {
             // Build.TAGS - returns "release-keys" not "test-keys"
             try {
                 XposedHelpers.findField(Build.class, "TAGS").set(null, SharedPref.getXValue("BuildTags", DEFAULT_TAGS));
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 XposedBridge.log("Fake TAGS ERROR: " + e.getMessage());
             }
             
@@ -408,7 +418,7 @@ public class FakeBuildInfo {
                     String[] supportedAbis = supportedAbisStr.split(",");
                     XposedHelpers.findField(Build.class, "SUPPORTED_ABIS").set(null, supportedAbis);
                     XposedHelpers.findField(Build.class, "SUPPORTED_32_BIT_ABIS").set(null, supportedAbis);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     XposedBridge.log("Fake SUPPORTED_ABIS ERROR: " + e.getMessage());
                 }
             }
